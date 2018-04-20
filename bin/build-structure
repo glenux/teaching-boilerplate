@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'csv'
+require 'fileutils'
+
+CSV.foreach("structure.csv") do |row|
+	path = 'slides/' + row[0]
+	chapter_idx = row[1]
+	chapter = row[2]
+	title_idx = row[3]
+	title = row[4]
+	type = row[5]
+
+	next if File.exist? path 
+	FileUtils.mkdir_p File.dirname(path)
+	File.open(path, 'w') do |fh|
+	  fh.puts ""
+	  fh.puts "# #{chapter}"
+	  fh.puts ""
+	  fh.puts "### #{title}"
+	  fh.puts ""
+	  fh.puts "<!-- #{"%0.2d" % chapter_idx}/#{"%0.2d" % title_idx} #{type} -->"
+	  fh.puts ""
+	  fh.puts "----"
+	  fh.puts ""
+	end
+end
+

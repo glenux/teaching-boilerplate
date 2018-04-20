@@ -1,0 +1,11 @@
+Gemfile.lock
+.bundle
+vendor/bundle
+/node_modules
+build
+public
+source/css/theme/.sass-cache
+**/*~
+references/*
+*.pdf
+*.zip

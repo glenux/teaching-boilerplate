@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby 
+
+require 'sanitize'
+
+h1 = ""
+h2 = ""
+
+Dir['slides/**/*.md'].sort.each do |name|
+  content = File.read(name)
+  oldh1 = h1
+  oldh2 = h2
+  if content =~ /^# (.*)\n/
+    h1 = $1
+  end
+  if content =~ /^### (.*)\n/
+    h2 = $1
+  end
+
+  if oldh1 != h1
+    puts ""
+    puts "#{Sanitize.clean(h1)}"
+  end
+  if oldh2 != h2
+    puts "- #{Sanitize.clean(h2)}"
+  end
+end
