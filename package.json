@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@marp-team/marp-cli": "^0.16.2",
+    "@marp-team/marp-cli": "^0.17.4",
     "foreman": "^3.0.1",
     "node-sass": "^4.13.0"
   }
