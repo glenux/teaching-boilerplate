@@ -1,0 +1,73 @@
+---
+site_name: Teaching Boilerplate
+site_dir: _build/docs
+
+# theme_dir: 'themes/mkdocs-material/material'
+# theme_dir: 'themes/mkdocs-material'
+
+site_author: 'Glenn Y. Rolland'
+site_url: 'http://glenux.github.io/teaching-boilerplate'
+
+# copyright: 'Copyright (c) 2016 Glenux'
+
+repo_name: 'GitHub'
+repo_url: 'https://bitbucket.com/glenux-corp/teaching-boilerplate'
+# site_favicon: 'favicon.ico'
+
+theme:
+  language: fr
+  # name: 'gitbook'
+  # name: 'alabaster'
+  # name: 'windmill'
+  # name: 'ivory'
+  name: 'material'
+  palette:
+    primary: 'white'
+    accent: 'black'
+    neutral: 'black'
+  feature:
+    tabs: false
+
+i18n:
+  prev: 'Chapitre précédent'
+  next: 'Chapitre suivant'
+
+extra_css:
+  - css/extra.css
+
+extra_javascript:
+  - js/extra.js
+
+# author:
+#   github: 'glenux'
+#   twitter: 'glenux'
+
+# Extensions
+markdown_extensions:
+  - footnotes
+  - admonition
+  - toc:
+      permalink: '#'
+  - codehilite:
+      guess_lang: false
+
+  # pip install mdx_truly_sane_lists
+  - mdx_truly_sane_lists
+
+  # pip install pymdown-extensions
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+      #
+  # pip install pymdown-extensions
+  - pymdownx.superfences:
+
+extra:
+  search:
+    language: 'fr, en'
+
+# run the following line to update toc
+# pipenv run ./script/update-toc
+
+# BEGIN MKDOCS-TOC
+nav:
+# END MKDOCS-TOC

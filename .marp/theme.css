@@ -1,0 +1,85 @@
+/* @theme glenux */
+@import-theme 'default';
+body {
+  --primary-color: #009fcb;
+  --secondary-color: #241c1c;
+  --text-color: #111111; }
+
+section {
+  font-size: 24px; 
+  justify-content: start; }
+
+section footer {
+  opacity: 0.75;
+  color: #888; }
+
+section::after {
+  opacity: 0.5;
+  color: black; }
+
+section[id="1"] h1,
+section[id="1"] h2,
+section[id="1"] h3,
+section[id="1"] h4,
+section[id="1"] h5,
+section[id="1"] h6 {
+  /* color: white !important; */ }
+
+section[id="1"]::after {
+  color: var(--text-color); }
+
+section[id="1"] footer {
+  color: var(--text-color); }
+
+section.chapter {
+  justify-content: center; }
+
+/*
+section.chapter h1:first-child::before,
+section.chapter h2:first-child::before,
+section.chapter h3:first-child::before,
+section.chapter h4:first-child::before,
+section.chapter h5:first-child::before {
+  display: none;
+}
+*/
+h1:first-child,
+h2:first-child,
+h3:first-child,
+h4:first-child,
+h5:first-child,
+h6:first-child {
+  font-family: "Droid Sans Mono", monospace;
+  color: #662d91;
+  font-weight: bold;
+  position: relative; }
+
+h1:first-child::before {
+  content: "";
+  position: absolute;
+  display: block;
+  top: 0.2em;
+  left: -100px;
+  width: 70px;
+  height: 0.9em;
+  background-color: white; }
+
+section:not(.chapter) h2:first-child {
+  font-size: 100%; }
+
+h2:first-child::before {
+  content: "";
+  position: absolute;
+  display: block;
+  top: 0.2em;
+  left: -100px;
+  width: 70px;
+  height: 0.9em;
+  background-color: #662d91; }
+
+a {
+  color: inherit;
+  text-decoration: underline; }
+
+blockquote {
+  color: inherit; }

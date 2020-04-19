@@ -1,0 +1,19 @@
+{
+  "name": "teaching-framework-nodejs-advanced",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@marp-team/marp-cli": "^0.16.2",
+    "foreman": "^3.0.1",
+    "node-sass": "^4.13.0"
+  }
+}
