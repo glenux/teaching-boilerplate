@@ -1,72 +1,107 @@
 #!/usr/bin/make -f
 
-THEME=gyr
-THEME_OPT=-t $(THEME)
+## Configure this part if you wish to
+DEPLOY_REPO=
+DEPLOY_OPTS=
+BUILD_DIR=_build
 
-REVEALJS_THEMES=node_modules/reveal.js/css/theme
-REVEALJS_DIR=node_modules/reveal.js
+## Find slides
+SLIDES_MD=$(shell find slides \( -name '*.md' ! -name '_*' \))
+SLIDES_PDF=$(patsubst slides/%.md,$(BUILD_DIR)/slides/%.pdf,$(SLIDES_MD))
 
-BUILD_DIR=build
+all: help
 
-SLIDES_DIR=slides
-SLIDES_MD=$(wildcard $(SLIDES_DIR)/**/*.md)
-SLIDES_PDF=$(patsubst $(SLIDES_DIR)/%,$(BUILD_DIR)/%,$(patsubst %.md,%.pdf,$(SLIDES_MD)))
-SLIDES_HTML=$(patsubst $(SLIDES_DIR)/%,$(BUILD_DIR)/%,$(patsubst %.md,%.html,$(SLIDES_MD)))
+##
+## Install prerequisites
+##
 
-NAME=$(shell basename "$$(pwd)")
+prepare: prepare-slides prepare-docs ## install prerequisites
 
-REVEALMD=node_modules/.bin/reveal-md
-all: live
+prepare-slides: ## install prerequisites for PDF slides only
+	npm install
 
-configure: configure-assets configure-reveal configure-style
+prepare-docs: ## install prerequisites for static docs site only
+	pipenv install
 
-configure-assets:
-	$(MAKE) -C assets build 
-
-configure-reveal:
-	npm install reveal-md # -v 0.0.19
-	npm install node-sass
-
-configure-style:
-	cp -a themes/$(THEME).scss $(REVEALJS_THEMES)/source
-	cd $(REVEALJS_DIR) && ../.bin/node-sass \
-		css/theme/source/$(THEME).scss \
-		css/theme/$(THEME).css \
-
-zip:
-	rm -f "../$(NAME)-latest.zip"
-	(git ls-files ; find assets) |grep -v '^ext' | zip -r "../$(NAME)-latest.zip" -@
-
-live:
-	$(REVEALMD) --disable-auto-open --host 0.0.0.0 $(THEME_OPT) $(SLIDES_DIR)
-
-.PHONY: build-pdf build-html
-build-pdf: $(SLIDES_PDF)
-
-build-html: $(SLIDES_HTML)
+.PHONY: prepare prepare-slides prepare-docs
 
 
-$(BUILD_DIR)/%.pdf: $(SLIDES_DIR)/%.md
-	mkdir -p "$$(dirname "$@")"
-	docker run --rm --net=host -v "`pwd`:/slides" astefanutti/decktape http://localhost:1948/$(<:slides/%=%) --pause 500 /slides/$@
-	touch -a -r "$<" "$@"
+watch: ## run development server
+	pipenv run honcho start 
 
-$(BUILD_DIR)/%.html: $(SLIDES_DIR)/%.md
-	mkdir -p "$$(dirname "$@")"
-	test -d "$$(dirname "$<")/images" \
-		&& rsync -a "$$(dirname "$<")/images/" "$$(dirname "$@")/images/" \
-		|| true
-	pandoc -f markdown+emoji -t html -o "$@" "$<"
-	touch -a -r "$<" "$@"
+watch-slides: ## run development server for PDF slides
+	npx marp --engine $$(pwd)/.marp/engine.js --html --theme $$(pwd)/.marp/theme.css -w slides -s
 
-clean: clean-pdf clean-html
+watch-docs: ## run development server for static docs site
+	pipenv run mkdocs serve --dev-addr 0.0.0.0:5001
 
-clean-pdf:
-	rm -f $(BUILD_DIR)/**/*.pdf
+serve: watch
+serve-slides: watch-slides
+serve-docs: watch-docs
 
-clean-html:
-	rm -f $(BUILD_DIR)/**/*.html
+.PHONY: watch watch-slides watch-docs serve serve-docs serve-slides
 
-tasklist:
-	watch "find slides/ -type f -name '*.md' |egrep -v '(template-|\.DONE\.md)' |sort"
+
+tocupdate:
+	while inotifywait -q -e move -e modify -e create -e attrib -e delete -r docs ; do \
+		sleep 1 ; \
+		pipenv run ./scripts/update-toc ; \
+	done
+
+$(BUILD_DIR)/slides/%.pdf: slides/%.md 
+	mkdir -p $(BUILD_DIR)/slides
+	npx marp --allow-local-files \
+	 	 --engine $$(pwd)/engine.js \
+	 	 --html \
+	 	 --theme theme.css \
+	 	 $< \
+	 	 -o $@
+
+
+##
+## Build final documents 
+##
+## slides => PDF
+## docs   => static web site
+##
+
+build: build-docs build-slides ## build all documents
+
+build-slides: $(SLIDES_PDF) $(SLIDES_MD) ## build PDF slides only
+
+build-docs:  ## build static docs site only
+	pipenv run mkdocs build --site-dir $(BUILD_DIR)/docs
+
+.PHONY: build build-slides
+
+deploy-docs: ## deploy static docs site to github
+	git push $(DEPLOY_REPO)
+	pipenv run mkdocs gh-deploy $(DEPLOY_OPTS)
+
+help: ## print this help
+	@echo "Usage: make <target>"
+	@echo ""
+	@echo "With one of following targets:"
+	@echo ""
+	@awk 'BEGIN {FS = ":.*?## "} \
+	  /^[a-zA-Z_-]+:.*?## / \
+	  { sub("\\\\n",sprintf("\n%22c"," "), $$2); \
+		printf("\033[36m%-20s\033[0m %s\n", $$1, $$2); \
+	  }' $(MAKEFILE_LIST)
+	@echo ""
+
+
+##
+## Clean
+##
+
+clean: clean-slides clean-docs # remove generated documents
+
+clean-slides:
+	rm -fr $(BUILD_DIR)/slides # remove generated PDF slides
+
+clean-docs:
+	rm -fr $(BUILD_DIR)/docs # remove generated static docs site
+
+.PHONY: clean clean-slides clean-docs
 
