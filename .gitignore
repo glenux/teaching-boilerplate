@@ -1,11 +1,10 @@
-Gemfile.lock
 .bundle
 vendor/bundle
-/node_modules
-build
-public
-source/css/theme/.sass-cache
+node_modules
+*.docx
+*.epub
+/_*/
 **/*~
-references/*
 *.pdf
 *.zip
+\.vagrant
