@@ -4,6 +4,8 @@
 DEPLOY_REPO=
 DEPLOY_OPTS=
 BUILD_DIR=_build
+DOCS_PORT=5100
+SLIDES_PORT=5200
 
 ## Find slides
 SLIDES_MD=$(shell find slides \( -name '*.md' ! -name '_*' \))
@@ -30,10 +32,10 @@ watch: ## run development server
 	pipenv run honcho start 
 
 watch-slides: ## run development server for PDF slides
-	npx marp --engine $$(pwd)/.marp/engine.js --html --theme $$(pwd)/.marp/theme.css -w slides -s
+	PORT=$(SLIDES_PORT) npx marp --engine $$(pwd)/.marp/engine.js --html --theme $$(pwd)/.marp/theme.css -w slides -s
 
 watch-docs: ## run development server for static docs site
-	pipenv run mkdocs serve --dev-addr 0.0.0.0:5001
+	pipenv run mkdocs serve --dev-addr 0.0.0.0:$(DOCS_PORT)
 
 serve: watch
 serve-slides: watch-slides
