@@ -1,17 +1,42 @@
-README
-======
+# Teaching-Boilerplate
 
-Usage
------
+## Prerequisites
+
+Make sure you have python and node installed
+
+Install python packages
+
+    pip install -U pipenv
+    pipenv install
+
+Install node packages
+
+    npm install
 
 
-First install stasis via bundle
+## Usage
 
-  bundle install --path vendor/bundle
+### Watch mode
 
-Then run stasis once or in devel mode
+This mode allows you the result on-the-fly as you makea changes in the content.
 
-  bundle exec middleman
+To use watch mode, type:
 
-And get the result into the public/ directory !
+    make watch
 
+To use watch mode for slides only type:
+
+    make watch-slides
+
+To use watch mode for docs only type:
+
+    make watch-docs
+
+
+### Build mode
+
+This mode builds final content for delivery (website, PDF files)
+
+To use build mode:
+
+    make build
