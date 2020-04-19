@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'fileutils'
+require 'find'
+require 'thor'
+require 'colorize'
+
+EXCLUDE_LIST = ['.git', 'node_modules'].freeze
+SKEL_DIR = ENV['HOME'] + '/src/Glenux/teaching-boilerplate'
+
+# TeachingCli
+class TeachingCli < Thor
+  desc 'create PROJECT', 'Create PROJECT directory'
+  def create(target)
+    # Create dir
+    if target.empty?
+      warn 'Target not specified'
+      exit 1
+    end
+
+    puts "Creating project #{target}"
+    FileUtils.mkdir_p target
+
+    # Create structure
+    Find.find(SKEL_DIR) do |path|
+      if EXCLUDE_LIST.include? File.basename(path)
+        Find.prune
+        next
+      end
+      next unless File.directory?(path)
+
+      shortpath = path.gsub(SKEL_DIR, '').gsub(%r{^/}, '')
+      next if shortpath.empty?
+
+      targetpath = File.join(target, shortpath)
+      print "Creating directory #{shortpath}… "
+      FileUtils.mkdir_p targetpath
+      puts 'ok'.green
+    end
+
+    # Create files if possible
+    Find.find(SKEL_DIR) do |path|
+      if EXCLUDE_LIST.include? File.basename(path)
+        Find.prune
+        next
+      end
+
+      next if File.directory?(path)
+
+      shortpath = path.gsub(SKEL_DIR, '').gsub(%r{^/}, '')
+      next if shortpath.empty?
+
+      targetpath = File.join(target, shortpath)
+      print "Creating file #{shortpath}… "
+
+      # File does not exist => install it
+      unless File.exist? targetpath
+        FileUtils.cp path, targetpath
+        puts 'ok (installed)'.green
+        next
+      end
+
+      # File exist & different
+      unless system 'cmp', '--quiet', path, targetpath
+        if File.exist? targetpath + '.new'
+          puts 'error (pease solve previous conflict)'.red
+        else
+          puts 'warning (conflict when creating file)'.yellow
+          FileUtils.cp path, targetpath + '.new'
+        end
+        next
+      end
+
+      puts 'ok (identical)'.green
+      FileUtils.cp path, targetpath
+    end
+  end
+end
+
+TeachingCli.start(ARGV)
