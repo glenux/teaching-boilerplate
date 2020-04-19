@@ -1,0 +1,128 @@
+#!/usr/bin/env python3
+
+import click
+
+import os
+import re
+import pdb
+import pprint
+
+from pathlib import Path
+
+pp = pprint.PrettyPrinter(indent=4).pprint
+
+class TocBuilder:
+    def __init__(self, root_path):
+        self.root_path = root_path
+
+    # Helper for titles
+    def __get_title(self, fn):
+        if not os.path.exists(fn):
+            return None
+        f1 = open(fn, "r")
+        for line in f1:
+            m = re.match(r"^#\s(.*)$", line)
+            if m:
+                f1.close()
+                return m.groups()[0]
+        f1.close()
+        return None
+
+    def lookup(self):
+        md_files = []
+        for root, dirs, files in os.walk(self.root_path):
+            for fn in files:
+                # compute absolute and relative path
+                abs_path = os.path.join(root, fn)
+                rel_path = os.path.relpath(abs_path, self.root_path)
+                
+                # split name into parts
+                bname = os.path.basename(rel_path)
+                bname_split = os.path.splitext(bname)
+                dname = os.path.dirname(rel_path)
+                
+                # skip files in docs/ root
+                if dname == "":
+                    continue
+                
+                # skip index files
+                if bname_split[0] == 'index':
+                    continue
+                
+                # keep only .md files
+                if bname_split[1] == '.md':
+                    md_files.append(rel_path)
+        return md_files
+
+    def format(self, md_files):
+        lines = ["nav:"]
+        lastdir=""
+        for f in sorted(md_files):
+            bname = os.path.basename(f)
+            bname_split = os.path.splitext(bname)
+            dname = os.path.dirname(f)
+
+            if lastdir != dname:
+                lastdir = dname
+                title = self.__get_title(os.path.join(self.root_path, dname, 'index.md'))
+                if title is not None:
+                    lines.append("  - \"%s\":" % title)
+                else:
+                    lines.append("  - \"%s\":" % dname)
+
+            lines.append("    - %s" % f)
+        return lines
+
+class FileInjector:
+    def __init__(self, delimiter):
+        self.delimiter = delimiter
+
+    def inject(self, filename, lines):
+        suffix = '~update_toc'
+        src_fh = open(filename, 'r')
+        dst_fh = open(filename + suffix, 'w')
+
+        inject_mode = False
+        end_pattern = r"^#\s+END {0}\s*$".format(self.delimiter)
+        begin_pattern = r"^#\s+BEGIN {0}\s*$".format(self.delimiter)
+        for src_line in src_fh:
+            if (not inject_mode) and re.match(begin_pattern, src_line):
+                # activate inject_mode, write begin pattern and lines
+                inject_mode = True
+                dst_fh.write(src_line)
+                for line in lines:
+                    dst_fh.write(line + "\n")
+
+            elif inject_mode and re.match(end_pattern, src_line): 
+                # disable inject_mode and write end pattern
+                inject_mode = False
+                dst_fh.write(src_line)
+            elif inject_mode:
+                # skip line if injection mode is active
+                next
+            else:
+                # simple copy if injection mode is NOT active
+                dst_fh.write(src_line)
+            # si la ligne <
+        # FIXME: error if inject_mode is still True
+        src_fh.close()
+        dst_fh.close()
+        os.rename(filename + suffix, filename)
+
+# build TOC in-memory
+# 
+# open mkdocs.yml file
+# save part before 
+
+@click.command()
+def build():
+    root_path = Path(__file__).parent.parent
+    toc = TocBuilder(str(root_path / 'docs'))
+    md_files = toc.lookup()
+    md_toc = toc.format(md_files)
+    fi = FileInjector('MKDOCS-TOC')
+    fi.inject(str(root_path / 'mkdocs.yml'), md_toc)
+
+if __name__ == '__main__':
+    build()
+
