@@ -7,7 +7,12 @@ require 'thor'
 require 'colorize'
 
 EXCLUDE_LIST = ['.git', 'node_modules'].freeze
-SKEL_DIR = ENV['HOME'] + '/src/Glenux/teaching-boilerplate'
+SKEL_DIR = ENV['HOME'] + '/src/Glenux.Teaching/teaching-boilerplate'
+
+if ! File.directory? SKEL_DIR
+  warn "ERROR: missing #{SKEL_DIR}"
+  exit 1
+end
 
 # TeachingCli
 class TeachingCli < Thor
