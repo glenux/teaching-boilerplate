@@ -11,6 +11,7 @@ mkdocs-material = "*"
 mdx-truly-sane-lists = "*"
 pymdown-extensions = "*"
 honcho = "*"
+pyinotify = "*"
 
 [requires]
-python_version = "3.7"
+python_full_version = "3.7"
