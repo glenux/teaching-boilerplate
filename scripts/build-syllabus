@@ -1,26 +1,62 @@
-#!/usr/bin/env ruby 
+#!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'sanitize'
 
-h1 = ""
-h2 = ""
-
-Dir['slides/**/*.md'].sort.each do |name|
-  content = File.read(name)
-  oldh1 = h1
-  oldh2 = h2
-  if content =~ /^# (.*)\n/
-    h1 = $1
-  end
-  if content =~ /^### (.*)\n/
-    h2 = $1
+class Syllabus
+  def initialize
+    @entries = []
   end
 
-  if oldh1 != h1
-    puts ""
-    puts "#{Sanitize.clean(h1)}"
+  def add(level, content)
+    # puts "Adding L#{level} - #{content}"
+    entry = @entries.last.clone || []
+    entry[level] = content
+    @entries.push entry
   end
-  if oldh2 != h2
-    puts "- #{Sanitize.clean(h2)}"
+
+  def display_entry(level, value, addspace=false)
+    case level
+    when 0 then puts "# #{value}\n\n"
+    when 1 then puts "## #{value}\n\n"
+    when 2 then puts "* #{value}\n"
+    else
+      puts '  ' * (level - 2) + value
+    end
+    puts '\n' if addspace
+  end
+
+  def display
+    old_entry = nil
+    old_level = 0
+    @entries.each do |entry|
+      entry.each.with_index do |val, level|
+        next if val.nil? # TODO: detect inconsistensy
+        next if !old_entry.nil? && old_entry[level] == val
+
+        display_entry(level, val, (old_level > level))
+      end
+      old_entry = entry
+    end
+  end
+
+  def syllabus_file(filename)
+    File.readlines(filename).each do |line|
+      next unless line =~ /^(#+)\s+(.*)\n/
+
+      level = ($1.size - 1)
+      content = Sanitize.clean($2)
+      add(level, content)
+    end
+  end
+
+  def syllabus_dir(dir)
+    Dir['slides/**/*.md'].sort.each do |name|
+      syllabus_file(name)
+    end
   end
 end
+
+s = Syllabus.new
+s.syllabus_dir(nil)
+s.display
