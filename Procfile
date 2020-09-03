@@ -1,3 +1,3 @@
-docs: make watch-docs
-slides: make watch-slides
+docs: make watch-docs-internal
+slides: make watch-slides-internal
 toc: make tocupdate
