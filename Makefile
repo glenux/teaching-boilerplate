@@ -11,6 +11,13 @@ SLIDES_PORT=5200
 SLIDES_MD=$(shell find slides \( -name '*.md' ! -name '_*' \))
 SLIDES_PDF=$(patsubst slides/%.md,$(BUILD_DIR)/slides/%.pdf,$(SLIDES_MD))
 
+DOCS_IMAGES_DOT=$(shell find docs \( -name '*.dot' ! -name '_*' \))
+DOCS_IMAGES_DOT_SVG=$(patsubst docs/%.dot,docs/%.dot.svg,$(DOCS_IMAGES_DOT))
+
+DOCS_IMAGES_CIRCO=$(shell find docs \( -name '*.circo' ! -name '_*' \))
+DOCS_IMAGES_CIRCO_SVG=$(patsubst docs/%.circo,docs/%.circo.svg,$(DOCS_IMAGES_CIRCO))
+DOCS_IMAGES_SVG=$(DOCS_IMAGES_DOT_SVG) $(DOCS_IMAGES_CIRCO_SVG)
+
 all: help
 
 ##
@@ -27,33 +34,51 @@ prepare-docs: ## install prerequisites for static docs site only
 
 .PHONY: prepare prepare-slides prepare-docs
 
+images: $(DOCS_IMAGES_SVG) ## build images
+	@echo Dot: $(DOCS_IMAGES_DOT)
+	@echo Circo: $(DOCS_IMAGES_CIRCO)
+	@echo Built: $(DOCS_IMAGES_SVG)
+.PHONY: images
+
+%.dot.svg: %.dot
+	dot -Tsvg $< > $@
+
+%.circo.svg: %.circo
+	circo -Tsvg $< > $@
 
 watch: ## run development server
 	pipenv run honcho start 
 
-watch-slides: ## run development server for PDF slides
+watch-docs-internal:
+	pipenv run mkdocs serve --dev-addr 0.0.0.0:$(DOCS_PORT)
+
+watch-slides-internal:
 	PORT=$(SLIDES_PORT) npx marp --engine $$(pwd)/.marp/engine.js --html --theme $$(pwd)/.marp/theme.css -w slides -s
 
+watch-slides: ## run development server for PDF slides
+	pipenv run honcho start slides
+
 watch-docs: ## run development server for static docs site
-	pipenv run mkdocs serve --dev-addr 0.0.0.0:$(DOCS_PORT)
+	pipenv run honcho start docs toc
 
 serve: watch
 serve-slides: watch-slides
 serve-docs: watch-docs
 
-.PHONY: watch watch-slides watch-docs serve serve-docs serve-slides
+.PHONY: watch watch-slides watch-docs watch-slides-internal watch-docs-internal serve serve-docs serve-slides
 
 
 tocupdate:
-	while inotifywait -q -e move -e modify -e create -e attrib -e delete -r docs ; do \
-		sleep 1 ; \
+	while inotifywait -q -e move -e modify -e create -e attrib -e delete -e moved_to -r docs ; do \
+		sleep 0.2 ; \
+		make images ; \
 		pipenv run ./scripts/update-toc ; \
 	done
 
 $(BUILD_DIR)/slides/%.pdf: slides/%.md 
 	mkdir -p $(BUILD_DIR)/slides
 	npx marp --allow-local-files \
-	 	 --engine $$(pwd)/engine.js \
+	 	 --engine $$(pwd)/.marp/engine.js \
 	 	 --html \
 	 	 --theme theme.css \
 	 	 $< \
