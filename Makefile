@@ -80,7 +80,7 @@ $(BUILD_DIR)/slides/%.pdf: slides/%.md
 	npx marp --allow-local-files \
 	 	 --engine $$(pwd)/.marp/engine.js \
 	 	 --html \
-	 	 --theme theme.css \
+	 	 --theme $$(pwd)/.marp/theme.css \
 	 	 $< \
 	 	 -o $@
 
