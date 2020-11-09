@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'sanitize'
+require 'thor'
 
 class Syllabus
   def initialize
@@ -51,12 +52,19 @@ class Syllabus
   end
 
   def syllabus_dir(dir)
-    Dir['slides/**/*.md'].sort.each do |name|
+    Dir[dir + '/**/*.md'].sort.each do |name|
       syllabus_file(name)
     end
   end
 end
 
-s = Syllabus.new
-s.syllabus_dir(nil)
-s.display
+class SyllabusCli < Thor
+  desc 'extract DIR', 'Extract data from DIR'
+  def extract dir
+    s = Syllabus.new
+    s.syllabus_dir(dir)
+    s.display
+  end
+end
+
+SyllabusCli.start(ARGV)
