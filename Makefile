@@ -3,19 +3,33 @@
 ## Configure this part if you wish to
 DEPLOY_REPO=
 DEPLOY_OPTS=
+
+## Input directories
+SLIDES_DIR=slides
+DOCS_DIR=docs
+IMAGES_DIR=images
 BUILD_DIR=_build
+
+## Output directories
+BUILD_SLIDES_DIR=$(BUILD_DIR)/slides
+BUILD_DOCS_DIR=$(BUILD_DIR)/docs
+BUILD_IMAGES_DIR=images
+
+## Ports
 DOCS_PORT=5100
 SLIDES_PORT=5200
 
-## Find slides
-SLIDES_MD=$(shell find slides \( -name '*.md' ! -name '_*' \))
-SLIDES_PDF=$(patsubst slides/%.md,$(BUILD_DIR)/slides/%.pdf,$(SLIDES_MD))
+## Find .md slides
+SLIDES_MD=$(shell find $(SLIDES_DIR) \( -name '*.md' ! -name '_*' \))
+SLIDES_PDF=$(patsubst $(SLIDES_DIR)/%.md,$(BUILD_SLIDES_DIR)/%.pdf,$(SLIDES_MD))
 
-DOCS_IMAGES_DOT=$(shell find docs \( -name '*.dot' ! -name '_*' \))
-DOCS_IMAGES_DOT_SVG=$(patsubst docs/%.dot,docs/%.dot.svg,$(DOCS_IMAGES_DOT))
+## Find .dot graphs
+DOCS_IMAGES_DOT=$(shell find $(IMAGES_DIR) \( -name '*.dot' ! -name '_*' \))
+DOCS_IMAGES_DOT_SVG=$(patsubst $(IMAGES_DIR)/%.dot,$(BUILD_IMAGES_DIR)/%.dot.svg,$(DOCS_IMAGES_DOT))
 
-DOCS_IMAGES_CIRCO=$(shell find docs \( -name '*.circo' ! -name '_*' \))
-DOCS_IMAGES_CIRCO_SVG=$(patsubst docs/%.circo,docs/%.circo.svg,$(DOCS_IMAGES_CIRCO))
+## Find .circo graphs
+DOCS_IMAGES_CIRCO=$(shell find $(IMAGES_DIR) \( -name '*.circo' ! -name '_*' \))
+DOCS_IMAGES_CIRCO_SVG=$(patsubst $(IMAGES_DIR)/%.circo,$(BUILD_IMAGES_DIR)/%.circo.svg,$(DOCS_IMAGES_CIRCO))
 DOCS_IMAGES_SVG=$(DOCS_IMAGES_DOT_SVG) $(DOCS_IMAGES_CIRCO_SVG)
 
 all: help
@@ -53,7 +67,13 @@ watch-docs-internal:
 	pipenv run mkdocs serve --dev-addr 0.0.0.0:$(DOCS_PORT)
 
 watch-slides-internal:
-	PORT=$(SLIDES_PORT) npx marp --engine $$(pwd)/.marp/engine.js --html --theme $$(pwd)/.marp/theme.css -w slides -s
+	PORT=$(SLIDES_PORT) \
+		 npx marp \
+		 --engine $$(pwd)/.marp/engine.js \
+		 --html \
+		 --theme $$(pwd)/.marp/theme.css \
+		 -w $(SLIDES_DIR) \
+		 -s
 
 watch-slides: ## run development server for PDF slides
 	pipenv run honcho start slides
@@ -75,8 +95,8 @@ tocupdate:
 		pipenv run ./scripts/update-toc ; \
 	done
 
-$(BUILD_DIR)/slides/%.pdf: slides/%.md 
-	mkdir -p $(BUILD_DIR)/slides
+$(BUILD_SLIDES_DIR)/%.pdf: $(SLIDES_DIR)/%.md
+	mkdir -p $(BUILD_SLIDES_DIR)
 	npx marp --allow-local-files \
 	 	 --engine $$(pwd)/.marp/engine.js \
 	 	 --html \
@@ -97,7 +117,9 @@ build: build-docs build-slides ## build all documents
 build-slides: $(SLIDES_PDF) $(SLIDES_MD) ## build PDF slides only
 
 build-docs:  ## build static docs site only
-	pipenv run mkdocs build --site-dir $(BUILD_DIR)/docs
+	mkdir -p $(BUILD_DOCS_DIR)
+	pipenv run mkdocs build \
+		--site-dir $(BUILD_DOCS_DIR)
 
 .PHONY: build build-slides
 
@@ -125,10 +147,10 @@ help: ## print this help
 clean: clean-slides clean-docs # remove generated documents
 
 clean-slides:
-	rm -fr $(BUILD_DIR)/slides # remove generated PDF slides
+	rm -fr $(BUILD_SLIDES_DIR) # remove generated PDF slides
 
 clean-docs:
-	rm -fr $(BUILD_DIR)/docs # remove generated static docs site
+	rm -fr $(BUILD_DOCS_DIR) # remove generated static docs site
 
 .PHONY: clean clean-slides clean-docs
 
