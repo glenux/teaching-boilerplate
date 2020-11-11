@@ -92,7 +92,7 @@ tocupdate:
 	while inotifywait -q -e move -e modify -e create -e attrib -e delete -e moved_to -r docs ; do \
 		sleep 0.2 ; \
 		make images ; \
-		pipenv run ./scripts/update-toc ; \
+		pipenv run ./scripts/update-toc $(DOCS_DIR) ; \
 	done
 
 $(BUILD_SLIDES_DIR)/%.pdf: $(SLIDES_DIR)/%.md
