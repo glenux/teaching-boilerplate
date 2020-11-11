@@ -1,0 +1,24 @@
+#!/usr/bin/ruby
+# vim: set ts=2 sw=2 et:
+# frozen_string_literal: true
+
+require 'fileutils'
+require 'thor'
+
+# Hop
+class D2SCli < Thor
+  desc 'process FILE', 'Process file'
+  def process(file)
+    FileUtils.cp(file, file + '.bak')
+    content = File.read(file)
+    content.gsub!(/<!--\s*.*?_class:\s*chapter\s*.*?-->/m, '')
+    content.gsub!(/^.*images\/background.png.*$/, '')
+    content.gsub!(/^----?\s*$/, '')
+    content.gsub!(/\n\s*\n\s*\n/, "\n\n")
+    File.write(file, content)
+  end
+
+  default_task :process
+end
+
+D2SCli.start(ARGV)
