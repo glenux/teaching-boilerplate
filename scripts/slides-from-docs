@@ -1,0 +1,118 @@
+#!/usr/bin/ruby
+# vim: set ts=2 sw=2 et:
+# frozen_string_literal: true
+
+require 'fileutils'
+require 'thor'
+
+# TODO: read https://github.com/vmg/redcarpet/tree/master/lib/redcarpet
+# TODO: use  https://github.com/vmg/redcarpet
+warn "Dev in progress. Do not use"
+exit 1
+
+# Hop
+module SlidesFromDocs
+
+  class MdNode
+    def initialize(parent, line)
+      @parent = parent
+      @line = lne
+    end
+
+    def self.match?(_line)
+      raise NotImplementedError
+    end
+
+    def self.build(parent, line)
+      classes = %w[HeadingMdNode TextMdNode BlockMdNode ItemMdNode]
+      matching =
+        classes
+        .map { |const_name| Object.const_get(const_name) }
+        .select { |const| const.match? line }
+
+      raise 'No matching MdNode class' if matching.empty?
+
+      matching.first.new(parent, line)
+    end
+
+    def accept?(_line)
+      raise NotImplementedError
+    end
+  end
+
+  # MdNode is a heading
+  class HeadingMdNode < MdNode
+    attr_reader :heading_level
+    def initialize(parent, line)
+      @heading_level = parent.heading_level + 1
+      super
+    end
+
+    def self.match?(line)
+      line =~ /^#+ /
+    end
+
+    def accept?(line)
+      if line =~ /^(#+) /
+        line_level = Regexp.last_match[1].size
+        return (line_level > @level)
+      end
+
+      true
+    end
+  end
+
+  class BlockMdNode < MdNode
+  end
+
+  class ItemMdNode < MdNode
+  end
+
+  class InlineCodeMdNode < MdNode
+    def initialize(parent, line)
+    end
+
+    def accept?(line)
+      return true if line =~ /^```/
+      return true 
+    end
+  end
+
+  class BlockCodeMdNode < MdNode
+  end
+
+  class TextMdNode < MdNode
+    def accept?(line)
+    end
+  end
+
+
+  # Command line handler
+  class Cli < Thor
+    desc 'process INFILE', 'Process file'
+    option :output, type: :string, aliases: '-o', default: '-'
+    def process(infile)
+      outfile = options[:output]
+      outfile_fh =
+        if outfile == '-' then STDOUT
+        else File.open(outfile)
+        end
+
+      infile_fh = File.open(infile)
+      infile_fh.each_line do |line|
+        outfile_fh.puts line
+      end
+      # FileUtils.cp(file, file + '.bak')
+      # content = File.read(file)
+      # content.gsub!(/<!--\s*.*?_class:\s*chapter\s*.*?-->/m, '')
+      # content.gsub!(%r{^.*images/background.png.*$}, '')
+      # content.gsub!(/^----?\s*$/, '')
+      # content.gsub!(/\n\s*\n\s*\n/, "\n\n")
+      # File.write(file, content)
+    end
+
+    default_task :process
+  end
+end
+
+SlidesFromDocs::Cli.start(ARGV)
