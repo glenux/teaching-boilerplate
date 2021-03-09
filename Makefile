@@ -42,6 +42,7 @@ prepare: prepare-slides prepare-docs ## install prerequisites
 
 prepare-slides: ## install prerequisites for PDF slides only
 	npm install
+	npx browserslist@latest --update-db
 
 prepare-docs: ## install prerequisites for static docs site only
 	pipenv install
