@@ -46,6 +46,10 @@ class TocBuilder:
                 if dname == "":
                     continue
                 
+                # skip files starting with '_'
+                if bname_split[0][0] == '_':
+                    continue
+
                 # skip index files
                 if bname_split[0] == 'index':
                     continue
