@@ -23,6 +23,10 @@ SLIDES_PORT=5200
 SLIDES_MD=$(shell find $(SLIDES_DIR) \( -name '*.md' ! -name '_*' \))
 SLIDES_PDF=$(patsubst $(SLIDES_DIR)/%.md,$(BUILD_SLIDES_DIR)/%.pdf,$(SLIDES_MD))
 
+## Find .uml graphs
+DOCS_IMAGES_UML=$(shell find $(IMAGES_DIR) \( -name '*.uml' ! -name '_*' \))
+DOCS_IMAGES_UML_SVG=$(patsubst $(IMAGES_DIR)/%.uml,$(BUILD_IMAGES_DIR)/%.uml.svg,$(DOCS_IMAGES_UML))
+
 ## Find .dot graphs
 DOCS_IMAGES_DOT=$(shell find $(IMAGES_DIR) \( -name '*.dot' ! -name '_*' \))
 DOCS_IMAGES_DOT_SVG=$(patsubst $(IMAGES_DIR)/%.dot,$(BUILD_IMAGES_DIR)/%.dot.svg,$(DOCS_IMAGES_DOT))
@@ -30,7 +34,7 @@ DOCS_IMAGES_DOT_SVG=$(patsubst $(IMAGES_DIR)/%.dot,$(BUILD_IMAGES_DIR)/%.dot.svg
 ## Find .circo graphs
 DOCS_IMAGES_CIRCO=$(shell find $(IMAGES_DIR) \( -name '*.circo' ! -name '_*' \))
 DOCS_IMAGES_CIRCO_SVG=$(patsubst $(IMAGES_DIR)/%.circo,$(BUILD_IMAGES_DIR)/%.circo.svg,$(DOCS_IMAGES_CIRCO))
-DOCS_IMAGES_SVG=$(DOCS_IMAGES_DOT_SVG) $(DOCS_IMAGES_CIRCO_SVG)
+DOCS_IMAGES_SVG=$(DOCS_IMAGES_DOT_SVG) $(DOCS_IMAGES_CIRCO_SVG) $(DOCS_IMAGES_UML_SVG)
 
 all: help
 
@@ -50,10 +54,14 @@ prepare-docs: ## install prerequisites for static docs site only
 .PHONY: prepare prepare-slides prepare-docs
 
 images: $(DOCS_IMAGES_SVG) ## build images
+	@echo Uml: $(DOCS_IMAGES_UML)
 	@echo Dot: $(DOCS_IMAGES_DOT)
 	@echo Circo: $(DOCS_IMAGES_CIRCO)
 	@echo Built: $(DOCS_IMAGES_SVG)
 .PHONY: images
+
+%.uml.svg: %.uml
+	plantuml -pipe -tsvg < $< > $@
 
 %.dot.svg: %.dot
 	dot -Tsvg $< > $@
