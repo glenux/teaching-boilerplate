@@ -2,7 +2,7 @@ FROM node:buster-slim
 MAINTAINER Glenn ROLLAND <glenux@glenux.net>
 
 RUN apt-get update && \
-	apt-get install -y make
+	apt-get install -y make python build-essential
 
 COPY . /app
 WORKDIR /app
