@@ -9,5 +9,7 @@ node_modules
 *.zip
 \.vagrant
 tmp*
+/images/*.circo.svg
+/images/*.dot.svg
 /images/*.ora.png
 /images/*.uml.svg
