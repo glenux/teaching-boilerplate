@@ -34,7 +34,14 @@ DOCS_IMAGES_DOT_SVG=$(patsubst $(IMAGES_DIR)/%.dot,$(BUILD_IMAGES_DIR)/%.dot.svg
 ## Find .circo graphs
 DOCS_IMAGES_CIRCO=$(shell find $(IMAGES_DIR) \( -name '*.circo' ! -name '_*' \))
 DOCS_IMAGES_CIRCO_SVG=$(patsubst $(IMAGES_DIR)/%.circo,$(BUILD_IMAGES_DIR)/%.circo.svg,$(DOCS_IMAGES_CIRCO))
+
+## Find .ora images
+DOCS_IMAGES_ORA=$(shell find $(IMAGES_DIR) \( -name '*.ora' ! -name '_*' \))
+DOCS_IMAGES_ORA_PNG=$(patsubst $(IMAGES_DIR)/%.ora,$(BUILD_IMAGES_DIR)/%.ora.png,$(DOCS_IMAGES_ORA))
+
+## Merge all lists
 DOCS_IMAGES_SVG=$(DOCS_IMAGES_DOT_SVG) $(DOCS_IMAGES_CIRCO_SVG) $(DOCS_IMAGES_UML_SVG)
+DOCS_IMAGES_PNG=$(DOCS_IMAGES_ORA_PNG)
 
 all: help
 
@@ -53,12 +60,20 @@ prepare-docs: ## install prerequisites for static docs site only
 
 .PHONY: prepare prepare-slides prepare-docs
 
-images: $(DOCS_IMAGES_SVG) ## build images
-	@echo Uml: $(DOCS_IMAGES_UML)
-	@echo Dot: $(DOCS_IMAGES_DOT)
-	@echo Circo: $(DOCS_IMAGES_CIRCO)
-	@echo Built: $(DOCS_IMAGES_SVG)
+images: $(DOCS_IMAGES_SVG) $(DOCS_IMAGES_PNG) ## build images
+	@echo "Source:"
+	@echo "  ora: $(DOCS_IMAGES_ORA)"
+	@echo "  uml: $(DOCS_IMAGES_UML)"
+	@echo "  dot: $(DOCS_IMAGES_DOT)"
+	@echo "  circo: $(DOCS_IMAGES_CIRCO)"
+	@echo "Built: $(DOCS_IMAGES_SVG) $(DOCS_IMAGES_PNG)"
 .PHONY: images
+
+%.ora.png: %.ora
+	TMPDIR="$$(mktemp -d)" \
+		&& unzip -q $< -d "$$TMPDIR" mergedimage.png \
+		&& touch "$$TMPDIR/mergedimage.png" \
+		&& mv "$$TMPDIR/mergedimage.png" $@
 
 %.uml.svg: %.uml
 	plantuml -pipe -tsvg < $< > $@
