@@ -1,0 +1,37 @@
+ 
+@startmindmap
+
+<style>
+node {
+    Shadowing 0.0
+}
+</style>
+
+* Types d'utilisateurs
+
+right side
+    
+** Chercheurs d'emploi
+***[#FFCCCC] FIXME: clarifier les sous-types\nd'apres les réponses au questionnaire
+** Structure d'accompagnement
+*** Responsable d'accompagnement
+*** Chargé d'accompagnement
+****_ Conseiller·e d'orientation
+****_ Coach
+****_ Mentor ou expert·e
+****_ Parrain ou marraine
+****_ Animateur·trice
+****_ Révélateur de talent\nou facilitateur·trice
+****_ Influenceur·se
+****[#FFCCCC] FIXME: sont-ils équivalents ?
+
+** TousTesPossibles\n LesCollectifsEmploi
+*** Animateur·trice réseau
+***[#FFCCCC] FIXME: Modérateur
+****_ Inter structures ?
+****_ Intra structures ?
+*** Administrateur·trice plate-forme (si centralisé)
+** Pole Emploi
+*** Conseiller d'orientation
+*** Directeur structure
+@endmindmap

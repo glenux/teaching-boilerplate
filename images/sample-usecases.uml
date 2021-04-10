@@ -1,0 +1,118 @@
+
+@startuml
+''
+'Setup skin'
+''
+skinparam shadowing false
+skinparam monochrome true
+'skinparam linetype ortho
+
+''
+' Define direction'
+''
+'top to bottom direction'
+left to right direction
+
+''
+' Define actors'
+''
+actor User
+actor Administrator as Admin
+actor Visitor
+
+''
+' Define related actors'
+''
+:Admin: -|> :User:
+:User: -|> :Visitor:
+
+''
+' Define use-cases'
+''
+
+rectangle "Event Management" {
+  usecase "Delete event" as event_delete
+  usecase "Create event" as event_create
+}
+
+rectangle "Participation" {
+  usecase "List events" as event_list
+
+  usecase "Filter/Show future events" as event_list_future
+  usecase "Filter/Show past events" as event_list_past
+  usecase "Filter/Show all events" as event_list_all
+  usecase "Filter/Show confirmed events" as event_list_confirmed
+  usecase "Filter/Show declined events" as event_list_declined
+
+  usecase "Confirm participation" as event_participation_confirm
+  usecase "Decline participation" as event_participation_decline
+  note as event_participation_type_note
+    Participation type can be either:
+    - UNKNOWN (default)
+    - NONE
+    - TO_CONFIRM
+    - CONFIRMED
+  end note
+  (event_participation_confirm) .. event_participation_type_note
+  (event_participation_decline) .. event_participation_type_note
+
+  usecase "Set participation content" as event_participation_content_set
+  note right of (event_participation_content_set)
+    Either:
+    - TEXT (default)
+    - MUSIC
+    - COMMENT
+  end note
+    
+  usecase "Set participation location" as event_participation_location_set
+  note right of (event_participation_location_set)
+    Either
+    - LOCATION_REMOTE (default)
+    - LOCATION_STUDIO
+  end note
+
+  usecase "Set participation metadata" as event_participation_metadata_set
+  note right of (event_participation_metadata_set)
+    Metadata (author, title, etc)
+  end note
+
+  usecase "View incomplete tasks\nfor next events" as task_list_incomplete
+  note right of (task_list_incomplete)
+    Examples: 
+    - missing details, 
+    - missing subscription information
+  end note
+}
+
+rectangle "Public pages" {
+    usecase "Access to public pages (?)" as static_read
+}
+
+
+''
+' Link actors with use-cases and related use-cases'
+''
+
+:Visitor: --> (static_read)
+
+:User: --> (event_list)
+(event_list) --> (event_list_future)
+(event_list) --> (event_list_past)
+(event_list) --> (event_list_all)
+(event_list) --> (event_list_confirmed)
+(event_list) --> (event_list_declined)
+
+:User: --> (event_participation_confirm)
+(event_participation_confirm) --> (event_participation_location_set)
+(event_participation_confirm) --> (event_participation_content_set)
+(event_participation_confirm) --> (event_participation_metadata_set)
+:User: --> (event_participation_decline)
+
+:User: --> (task_list_incomplete)
+
+
+:Admin: --> (event_create)
+:Admin: --> (event_delete)
+
+
+@enduml
