@@ -12,6 +12,7 @@ mdx-truly-sane-lists = "*"
 pymdown-extensions = "*"
 honcho = "*"
 pyinotify = "*"
+mkdocs-gitbook = "*"
 
 [requires]
 python_full_version = "3.8.0"
