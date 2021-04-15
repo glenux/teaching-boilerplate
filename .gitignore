@@ -1,4 +1,5 @@
 .bundle
+.sass-cache
 vendor/bundle
 node_modules
 *.docx
