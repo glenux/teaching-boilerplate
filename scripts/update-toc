@@ -31,6 +31,7 @@ class TocBuilder:
     def is_masked(self, rel_path):
         parts = rel_path.split('/')[::-1]
         for part in parts:
+          # print("  * Testing for '_' {}".format(part))
           if part[0] == '_':
             return True
 
@@ -40,7 +41,7 @@ class TocBuilder:
         md_files = []
         for root, dirs, files in os.walk(self.root_path):
             for fn in files:
-                print("Found {}".format(fn))
+                print("Found {}".format(fn), end='\r')
                 # compute absolute and relative path
                 abs_path = os.path.join(root, fn)
                 rel_path = os.path.relpath(abs_path, self.root_path)
@@ -50,23 +51,27 @@ class TocBuilder:
                 bname_split = os.path.splitext(bname)
                 dname = os.path.dirname(rel_path)
                 
-                # skip files in docs/ root
-                if dname == "":
-                    continue
-                
                 # skip files starting with '_'
                 #if bname_split[0][0] == '_':
                 if self.is_masked(rel_path):
+                    print("Found {} which is masked. Ignoring".format(fn))
                     continue
+                
+                # skip files in docs/ root
+                # if dname == "":
+                #   continue
 
                 # skip index files
                 if bname_split[0] == 'index':
+                    print("Found {} which is an index file. Ignoring".format(fn))
                     continue
                 
                 # keep only .md files
                 print("* keeping {}".format(rel_path))
                 if bname_split[1] == '.md':
                     md_files.append(rel_path)
+
+                print("Found {}. Keeping".format(fn))
 
         return md_files
 
