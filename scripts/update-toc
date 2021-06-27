@@ -45,27 +45,27 @@ class TocBuilder:
                 # compute absolute and relative path
                 abs_path = os.path.join(root, fn)
                 rel_path = os.path.relpath(abs_path, self.root_path)
-                
+
                 # split name into parts
                 bname = os.path.basename(rel_path)
                 bname_split = os.path.splitext(bname)
                 dname = os.path.dirname(rel_path)
-                
+
+                # skip files in docs/ root
+                # if dname == "":
+                #    continue
+
                 # skip files starting with '_'
                 #if bname_split[0][0] == '_':
                 if self.is_masked(rel_path):
                     print("Found {} which is masked. Ignoring".format(fn))
                     continue
-                
-                # skip files in docs/ root
-                # if dname == "":
-                #   continue
 
                 # skip index files
                 if bname_split[0] == 'index':
                     print("Found {} which is an index file. Ignoring".format(fn))
                     continue
-                
+
                 # keep only .md files
                 print("* keeping {}".format(rel_path))
                 if bname_split[1] == '.md':
@@ -91,7 +91,11 @@ class TocBuilder:
                 else:
                     lines.append("  - \"%s\":" % dname)
 
-            lines.append("    - %s" % f)
+            if dname != "":
+                lines.append("    - %s" % f)
+            else:
+                lines.append("  - %s" % f)
+
         return lines
 
 class FileInjector:
