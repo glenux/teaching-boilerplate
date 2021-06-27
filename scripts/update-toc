@@ -28,6 +28,14 @@ class TocBuilder:
         f1.close()
         return None
 
+    def is_masked(self, rel_path):
+        parts = rel_path.split('/')[::-1]
+        for part in parts:
+          if part[0] == '_':
+            return True
+
+        return False
+
     def lookup(self):
         md_files = []
         for root, dirs, files in os.walk(self.root_path):
@@ -47,7 +55,8 @@ class TocBuilder:
                     continue
                 
                 # skip files starting with '_'
-                if bname_split[0][0] == '_':
+                #if bname_split[0][0] == '_':
+                if self.is_masked(rel_path):
                     continue
 
                 # skip index files
