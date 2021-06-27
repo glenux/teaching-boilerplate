@@ -83,7 +83,7 @@ class TocBuilder:
             bname_split = os.path.splitext(bname)
             dname = os.path.dirname(f)
 
-            if lastdir != dname:
+            if lastdir != dname and dname != "":
                 lastdir = dname
                 title = self.__get_title(os.path.join(self.root_path, dname, 'index.md'))
                 if title is not None:

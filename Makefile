@@ -93,9 +93,9 @@ watch: ## run development server
 
 watch-tocupdate-internal:
 	while inotifywait -q -e move -e modify -e create -e attrib -e delete -e moved_to -r docs ; do \
-		sleep 0.2 ; \
+		sleep 2 ; \
 		$(MAKE) images ; \
-		pipenv run ./scripts/update-toc $(DOCS_DIR) ; \
+		$(MAKE) tocupdate ; \
 	done
 
 watch-docs-internal:
