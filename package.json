@@ -12,8 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@marp-team/marp-cli": "^0.17.4",
+    "@marp-team/marp-cli": "^1.0.3",
     "foreman": "^3.0.1",
-    "node-sass": "^4.13.0"
+    "node-sass": "^6.0.0"
+  },
+  "devDependencies": {
+    "@marp-team/marp-core": "^2.0.2",
+    "markdown-it-footnote": "^3.0.2"
   }
 }
