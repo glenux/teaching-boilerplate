@@ -84,13 +84,16 @@ images: $(DOCS_IMAGES_SVG) $(DOCS_IMAGES_PNG) ## build images
 %.circo.svg: %.circo
 	circo -Tsvg $< > $@
 
+.marp/theme.css:
+	cd .marp && $(MAKE) theme.css
+
 watch: ## run development server
 	pipenv run honcho start 
 
 watch-docs-internal:
 	pipenv run mkdocs serve --dev-addr 0.0.0.0:$(DOCS_PORT)
 
-watch-slides-internal:
+watch-slides-internal: .marp/theme.css
 	PORT=$(SLIDES_PORT) \
 		 npx marp \
 		 --engine $$(pwd)/.marp/engine.js \

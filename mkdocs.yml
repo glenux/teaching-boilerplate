@@ -61,6 +61,8 @@ markdown_extensions:
   # pip install pymdown-extensions
   - pymdownx.superfences:
 
+plugins: []
+
 extra:
   search:
     language: 'fr, en'
