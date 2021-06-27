@@ -14,4 +14,4 @@ honcho = "*"
 pyinotify = "*"
 
 [requires]
-python_full_version = "3.8.0"
+python_full_version = "3.8.3"
