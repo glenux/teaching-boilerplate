@@ -67,6 +67,7 @@ images: $(DOCS_IMAGES_SVG) $(DOCS_IMAGES_PNG) ## build images
 	@echo "  dot: $(DOCS_IMAGES_DOT)"
 	@echo "  circo: $(DOCS_IMAGES_CIRCO)"
 	@echo "Built: $(DOCS_IMAGES_SVG) $(DOCS_IMAGES_PNG)"
+
 .PHONY: images
 
 %.ora.png: %.ora
@@ -89,6 +90,13 @@ images: $(DOCS_IMAGES_SVG) $(DOCS_IMAGES_PNG) ## build images
 
 watch: ## run development server
 	pipenv run honcho start 
+
+watch-tocupdate-internal:
+	while inotifywait -q -e move -e modify -e create -e attrib -e delete -e moved_to -r docs ; do \
+		sleep 0.2 ; \
+		$(MAKE) images ; \
+		pipenv run ./scripts/update-toc $(DOCS_DIR) ; \
+	done
 
 watch-docs-internal:
 	pipenv run mkdocs serve --dev-addr 0.0.0.0:$(DOCS_PORT)
@@ -116,11 +124,8 @@ serve-docs: watch-docs
 
 
 tocupdate:
-	while inotifywait -q -e move -e modify -e create -e attrib -e delete -e moved_to -r docs ; do \
-		sleep 0.2 ; \
-		make images ; \
-		pipenv run ./scripts/update-toc $(DOCS_DIR) ; \
-	done
+	pipenv run ./scripts/update-toc $(DOCS_DIR) ; \
+
 
 $(BUILD_SLIDES_DIR)/%.pdf: $(SLIDES_DIR)/%.md
 	mkdir -p $(BUILD_SLIDES_DIR)
@@ -143,7 +148,8 @@ build: build-docs build-slides ## build all documents
 
 build-slides: $(SLIDES_PDF) $(SLIDES_MD) ## build PDF slides only
 
-build-docs:  ## build static docs site only
+build-docs: ## build static docs site only
+	$(MAKE) tocupdate
 	mkdir -p $(BUILD_DOCS_DIR)
 	pipenv run mkdocs build \
 		--site-dir $(BUILD_DOCS_DIR)
@@ -181,3 +187,11 @@ clean-docs:
 
 .PHONY: clean clean-slides clean-docs
 
+##
+## Utilities
+##
+
+fixme:
+	@egrep --color -rni '(fixme)' $(DOCS_DIR) $(SLIDES_DIR)
+
+.PHONY: fixme
