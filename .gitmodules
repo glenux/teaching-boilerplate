@@ -4,3 +4,6 @@
 [submodule "ext/marp-assets"]
 	path = ext/marp-assets
 	url = git@bitbucket.org:glenux/marp-assets.git
+[submodule ".makefiles"]
+	path = .makefiles
+	url = https://github.com/glenux/makefiles-forever
