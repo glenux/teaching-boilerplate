@@ -9,19 +9,31 @@ SLIDES_DIR=slides
 DOCS_DIR=docs
 IMAGES_DIR=images
 BUILD_DIR=_build
+CACHE_DIR=_cache
+
+## Internal directories
+CACHE_SLIDES_DIR=$(CACHE_DIR)/slides
 
 ## Output directories
 BUILD_SLIDES_DIR=$(BUILD_DIR)/slides
 BUILD_DOCS_DIR=$(BUILD_DIR)/docs
 BUILD_IMAGES_DIR=images
 
+
 ## Ports
 DOCS_PORT=5100
 SLIDES_PORT=5200
 
 ## Find .md slides
-SLIDES_MD=$(shell find $(SLIDES_DIR) \( -name '*.md' ! -name '_*' \))
-SLIDES_PDF=$(patsubst $(SLIDES_DIR)/%.md,$(BUILD_SLIDES_DIR)/%.pdf,$(SLIDES_MD))
+SLIDES_MDPP=$(shell find $(SLIDES_DIR) \( -name '*.mdpp' ! -name '_*' \))
+SLIDES_MDPP_MD=$(patsubst $(SLIDES_DIR)/%.mdpp,$(CACHE_SLIDES_DIR)/%.mdpp.md,$(SLIDES_MDPP))
+SLIDES_MDPP_MD_PDF=$(patsubst $(CACHE_SLIDES_DIR)/%.mdpp.md,$(BUILD_SLIDES_DIR)/%.pdf,$(SLIDES_MDPP_MD))
+
+SLIDES_MD=$(shell find $(SLIDES_DIR) \( -name '*.md' ! -name '_*' \)) $(SLIDES_MDPP_MD)
+SLIDES_MD_PDF=$(patsubst $(SLIDES_DIR)/%.md,$(BUILD_SLIDES_DIR)/%.pdf,$(SLIDES_MD))
+
+SLIDES_MD_ALL=$(SLIDES_MDPP_MD) $(SLIDES_MD)
+SLIDES_PDF_ALL=$(SLIDES_MDPP_MD_PDF) $(SLIDES_MD_PDF)
 
 ## Find .uml graphs
 DOCS_IMAGES_UML=$(shell find $(IMAGES_DIR) \( -name '*.uml' ! -name '_*' \))
@@ -85,6 +97,11 @@ images: $(DOCS_IMAGES_SVG) $(DOCS_IMAGES_PNG) ## build images
 %.circo.svg: %.circo
 	circo -Tsvg $< > $@
 
+$(CACHE_SLIDES_DIR)/%.mdpp.md: $(SLIDES_DIR)/%.mdpp
+	mkdir -p "$$(dirname "$@")"
+	m4 -d -I$(SLIDES_DIR) -I$(CACHE_SLIDES_DIR) $< > $@ \
+		|| ( rm -f $@ && exit 1 )
+
 .marp/theme.css:
 	cd .marp && $(MAKE) theme.css
 
@@ -126,9 +143,7 @@ serve-docs: watch-docs
 tocupdate:
 	pipenv run ./scripts/update-toc $(DOCS_DIR) ; \
 
-
-$(BUILD_SLIDES_DIR)/%.pdf: $(SLIDES_DIR)/%.md
-	mkdir -p $(BUILD_SLIDES_DIR)
+$(BUILD_SLIDES_DIR)/%.pdf: $(CACHE_SLIDES_DIR)/%.mdpp.md | $(BUILD_SLIDES_DIR)
 	npx marp --allow-local-files \
 	 	 --engine $$(pwd)/.marp/engine.js \
 	 	 --html \
@@ -136,6 +151,16 @@ $(BUILD_SLIDES_DIR)/%.pdf: $(SLIDES_DIR)/%.md
 	 	 $< \
 	 	 -o $@
 
+$(BUILD_SLIDES_DIR)/%.pdf: $(SLIDES_DIR)/%.md | $(BUILD_SLIDES_DIR)
+	npx marp --allow-local-files \
+	 	 --engine $$(pwd)/.marp/engine.js \
+	 	 --html \
+	 	 --theme $$(pwd)/.marp/theme.css \
+	 	 $< \
+	 	 -o $@
+
+$(BUILD_SLIDES_DIR):
+	mkdir -p $(BUILD_SLIDES_DIR)
 
 ##
 ## Build final documents 
@@ -146,7 +171,9 @@ $(BUILD_SLIDES_DIR)/%.pdf: $(SLIDES_DIR)/%.md
 
 build: build-docs build-slides ## build all documents
 
-build-slides: $(SLIDES_PDF) $(SLIDES_MD) ## build PDF slides only
+build-slides: $(SLIDES_PDF_ALL) $(SLIDES_MD_ALL) ## build PDF slides only
+
+merge-slides: $(SLIDES_MDPP_MD) $(SLIDES_MD_ALL)
 
 build-docs: ## build static docs site only
 	$(MAKE) tocupdate
