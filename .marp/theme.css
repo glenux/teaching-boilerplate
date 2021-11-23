@@ -43,18 +43,18 @@ section.chapter h5:first-child::before {
   display: none;
 }
 */
-h1:first-child,
-h2:first-child,
-h3:first-child,
-h4:first-child,
-h5:first-child,
-h6:first-child {
+section > h1:first-child,
+section > h2:first-child,
+section > h3:first-child,
+section > h4:first-child,
+section > h5:first-child,
+section > h6:first-child {
   font-family: "Droid Sans Mono", monospace;
   color: #662d91;
   font-weight: bold;
   position: relative; }
 
-h1:first-child::before {
+section > h1:first-child::before {
   content: "";
   position: absolute;
   display: block;
@@ -64,10 +64,10 @@ h1:first-child::before {
   height: 0.9em;
   background-color: white; }
 
-section:not(.chapter) h2:first-child {
+section:not(.chapter) > h2:first-child {
   font-size: 100%; }
 
-h2:first-child::before {
+section > h2:first-child::before {
   content: "";
   position: absolute;
   display: block;
@@ -83,3 +83,46 @@ a {
 
 blockquote {
   color: inherit; }
+
+bc-row {
+  margin-top: 20px;
+  margin-bottom: auto;
+  /* outline: 1px solid red; */
+  /* padding: 10px; */
+  box-sizing: border-box;
+  display: flex;
+}
+
+bc-row > bc-column {
+  /* outline: 1px solid red; */
+  margin-left: 100px;
+  flex-basis: 100%;
+  height: 100%;
+}
+
+
+bc-row > bc-column {
+  /* outline: 1px solid red; */
+  margin-left: 100px;
+  flex-basis: 100%;
+  height: 100%;
+}
+
+bc-row > bc-column[bc-grey] {
+  background-color: #eeeeee;
+  padding: 24px;
+}
+
+bc-row > bc-column:first-of-type {
+  margin-left: 0px;
+}
+
+bc-row > bc-column > h1:first-child,
+bc-row > bc-column > h2:first-child,
+bc-row > bc-column > h3:first-child,
+bc-row > bc-column > h4:first-child,
+bc-row > bc-column > h5:first-child,
+bc-row > bc-column > h6:first-child {
+  margin-top: 0;
+}
+
