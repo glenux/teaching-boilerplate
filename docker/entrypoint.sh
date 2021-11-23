@@ -3,4 +3,4 @@
 ARGS="$*"
 echo "Arguments: $ARGS"
 
-make "$0"
+exec make "$@"

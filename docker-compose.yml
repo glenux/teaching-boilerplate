@@ -3,7 +3,10 @@ version: "3.4"
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: glenux/teaching-boilerplate
     environment: {}
     ports:
       - 5100:5100
