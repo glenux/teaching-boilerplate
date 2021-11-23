@@ -4,6 +4,11 @@
 
 Make sure you have python and node installed
 
+    git remote rename origin boilerplate
+    git remote add origin git@...
+    git checkout -b upstream/boilerplate/master --track
+
+
 Install python packages
 
     pip install -U pipenv
@@ -15,6 +20,13 @@ Install node packages
 
 
 ## Usage
+
+### First steps
+
+Clean this repository
+
+Change the remote
+
 
 ### Watch mode
 

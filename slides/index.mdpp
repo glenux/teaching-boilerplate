@@ -1,0 +1,35 @@
+<!--
+theme: default
+vim: set ft=m4.markdown:
+paginate: true
+footer: Teaching Boilerplate © 2021
+-->
+
+<!-- 
+_class: chapter
+-->
+
+![bg w:512 left:50%](images/logo.png)
+
+# Teaching boilerplate
+
+----
+
+changequote(`{{',`}}')dnl
+
+include({{slides/010-demo/_010-about.md}})dnl
+
+----
+
+include({{slides/010-demo/_020-about.md}})dnl
+
+----
+
+<!-- 
+_class: chapter
+-->
+
+![bg right](images/background.png)
+
+## Questions ?
+
