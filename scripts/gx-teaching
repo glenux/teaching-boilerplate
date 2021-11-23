@@ -1,0 +1,26 @@
+#!/bin/sh
+# vim: set ft=sh:
+
+BASEDIR="${1:-.}"
+BASEDIR="$(cd "$BASEDIR" && pwd)"
+
+ACTION="${2:-watch}"
+
+DOCKER_IMAGE=glenux/teaching-boilerplate:latest
+
+echo "basedir      = $BASEDIR"
+echo "docker_image = $DOCKER_IMAGE"
+echo "action       = $ACTION"
+
+docker run -it \
+	-v "$BASEDIR/docs:/app/docs" \
+	-v "$BASEDIR/slides:/app/slides" \
+	-v "$BASEDIR/_build:/app/_build" \
+	-v "$BASEDIR/mkdocs.yml:/app/mkdocs.yml" \
+	-v "$BASEDIR/.marp:/app/.marp" \
+	-p 5200:5200 \
+	-p 5100:5100 \
+	"$DOCKER_IMAGE" "$ACTION"
+
+# TODO: ask current user permissions
+# TODO: fix permissions on generated files
