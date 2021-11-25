@@ -229,10 +229,10 @@ docker-build:
 	docker tag glenux/teaching-boilerplate:$(BUILD_VERSION) glenux/teaching-boilerplate:latest
 
 docker-push:
-	docker push glenux/teaching-boilerplate:latest
+	env docker push glenux/teaching-boilerplate:latest
 
 docker-pull:
-	docker pull glenux/teaching-boilerplate:latest
+	env docker pull glenux/teaching-boilerplate:latest
 
 shell:
 	$(SHELL) -c "exec $${SHELL}"
