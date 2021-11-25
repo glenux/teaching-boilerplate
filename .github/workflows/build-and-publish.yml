@@ -17,6 +17,9 @@ jobs:
 
     # steps to perform in job
     steps:
+      - name: Set current date as env variable
+        run: echo "BUILD_VERSION::v$(date +'%Y%m%d_%H%M')" >> $GITHUB_ENV
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -40,9 +43,11 @@ jobs:
           file: docker/Dockerfile
           # Note: tags has to be all lower-case
           tags: |
+            glenux/teaching-boilerplate:${{ env.BUILD_VERSION }}
             glenux/teaching-boilerplate:latest
           # build on feature branches, push only on main branch
           push: ${{ github.ref == 'refs/heads/master' }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+

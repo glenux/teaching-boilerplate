@@ -19,6 +19,7 @@ BUILD_SLIDES_DIR=$(BUILD_DIR)/slides
 BUILD_DOCS_DIR=$(BUILD_DIR)/docs
 BUILD_IMAGES_DIR=images
 
+BUILD_VERSION=v$(shell date "+%Y%m%d-%H%M")
 
 ## Ports
 DOCS_PORT=5100
@@ -222,3 +223,14 @@ fixme:
 	@egrep --color -rni '(fixme)' $(DOCS_DIR) $(SLIDES_DIR)
 
 .PHONY: fixme
+
+docker-build:
+	docker build -t glenux/teaching-boilerplate:$(BUILD_VERSION)
+	docker tag glenux/teaching-boilerplate:$(BUILD_VERSION) glenux/teaching-boilerplate:latest
+
+docker-push:
+	docker push glenux/teaching-boilerplate:latest
+
+docker-pull:
+	docker pull glenux/teaching-boilerplate:latest
+
