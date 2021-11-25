@@ -54,7 +54,9 @@ section > h6:first-child {
   font-weight: bold;
   position: relative; }
 
-section > h1:first-child::before {
+section > h1:first-child::before,
+section > h2:first-child::before,
+section > h3:first-child::before {
   content: "";
   position: absolute;
   display: block;
@@ -62,11 +64,10 @@ section > h1:first-child::before {
   left: -100px;
   width: 70px;
   height: 0.9em;
-  background-color: white; }
+  background-color: white; 
+}
 
-section:not(.chapter) > h2:first-child {
-  font-size: 100%; }
-
+/*
 section > h2:first-child::before {
   content: "";
   position: absolute;
@@ -76,6 +77,10 @@ section > h2:first-child::before {
   width: 70px;
   height: 0.9em;
   background-color: #662d91; }
+*/
+
+section:not(.chapter) > h2:first-child {
+  font-size: 100%; }
 
 a {
   color: inherit;
