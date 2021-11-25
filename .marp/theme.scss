@@ -43,6 +43,7 @@ section.chapter h5:first-child::before {
   display: none;
 }
 */
+section > bc-title:first-child,
 section > h1:first-child,
 section > h2:first-child,
 section > h3:first-child,
@@ -54,6 +55,7 @@ section > h6:first-child {
   font-weight: bold;
   position: relative; }
 
+section > bc-title:first-child::before,
 section > h1:first-child::before,
 section > h2:first-child::before,
 section > h3:first-child::before {
