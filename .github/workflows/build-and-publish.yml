@@ -18,7 +18,7 @@ jobs:
     # steps to perform in job
     steps:
       - name: Set current date as env variable
-        run: echo "BUILD_VERSION::v$(date +'%Y%m%d_%H%M')" >> $GITHUB_ENV
+        run: echo "BUILD_VERSION=v$(date +'%Y%m%d_%H%M')" >> $GITHUB_ENV
 
       - name: Checkout code
         uses: actions/checkout@v2
