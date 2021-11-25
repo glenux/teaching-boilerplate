@@ -12,9 +12,11 @@ echo "basedir      = $BASEDIR"
 echo "docker_image = $DOCKER_IMAGE"
 echo "action       = $ACTION"
 
-if [ -f "$BASEDIR/.marp/theme.css" ]; then
+if [ -f "$BASEDIR/.marp/theme.scss" ]; then
 	DOCKER_OPT_MARP_THEME="-v $BASEDIR/.marp:/app/.marp"
-	echo "Detected Marp theme. Adding option to command line ($DOCKER_OPT_MARP_THEME)"
+	echo "Theme: detected Marp files. Adding option to command line ($DOCKER_OPT_MARP_THEME)"
+else
+	echo "Theme: no theme detected. Using default files"
 fi
 
 
