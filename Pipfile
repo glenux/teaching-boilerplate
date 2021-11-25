@@ -6,13 +6,18 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-mkdocs = "*"
-mkdocs-material = "*"
-mdx-truly-sane-lists = "*"
-pymdown-extensions = "*"
+ansicolors = "*"
 honcho = "*"
-pyinotify = "*"
+mdx-truly-sane-lists = "*"
+mkdocs = "*"
+mkdocs-awesome-pages-plugin = "*"
 mkdocs-gitbook = "*"
+mkdocs-include-markdown-plugin = "*"
+mkdocs-material = "*"
+mocodo = "*"
+pyinotify = "*"
+pymdown-extensions = "*"
+
 
 [requires]
 python_version = "3.9"

@@ -26,7 +26,9 @@ theme:
     accent: 'black'
     neutral: 'black'
   feature:
-    tabs: false
+    - navigation.tabs
+    - navigation.tabs.sticky
+    # tabs: false
 
 i18n:
   prev: 'Chapitre précédent'
@@ -61,7 +63,10 @@ markdown_extensions:
   # pip install pymdown-extensions
   - pymdownx.superfences:
 
-plugins: []
+# plugins: []
+plugins:
+  - include-markdown
+  - awesome-pages
 
 extra:
   search:
