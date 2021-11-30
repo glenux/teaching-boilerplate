@@ -26,6 +26,8 @@ docker run -it \
 	-v "$BASEDIR/images:/app/images" \
 	-v "$BASEDIR/_build:/app/_build" \
 	-v "$BASEDIR/mkdocs.yml:/app/mkdocs.yml" \
+	-e "EXT_UID=$(id -u)" \
+	-e "EXT_GID=$(id -g)" \
 	$DOCKER_OPT_MARP_THEME \
 	-p 5200:5200 \
 	-p 5100:5100 \
