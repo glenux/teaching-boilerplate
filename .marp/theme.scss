@@ -43,6 +43,17 @@ section.chapter h5:first-child::before {
   display: none;
 }
 */
+
+section > bc-title {
+  line-height: 39px;
+  font-size: 32px;
+  padding-bottom: 9.36px;
+}
+
+section > h1 {
+  color: var(--text-color);
+}
+
 section > bc-title:first-child,
 section > h1:first-child,
 section > h2:first-child,
@@ -69,8 +80,15 @@ section > h3:first-child::before {
   background-color: white; 
 }
 
-/*
-section > h2:first-child::before {
+
+section > bc-title:first-child::before,
+section > h1:first-child::before,
+section > h2:first-child::before,
+section > h3:first-child::before,
+section > h4:first-child::before,
+section > h5:first-child::before,
+section > h6:first-child::before
+{
   content: "";
   position: absolute;
   display: block;
@@ -78,8 +96,8 @@ section > h2:first-child::before {
   left: -100px;
   width: 70px;
   height: 0.9em;
-  background-color: #662d91; }
-*/
+background-color: #662d91; }
+
 
 section:not(.chapter) > h2:first-child {
   font-size: 100%; }
