@@ -3,7 +3,7 @@ MAINTAINER Glenn ROLLAND <glenux@glenux.net>
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends python3 python3-pip pipenv \
- && apt-get clean
+ && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
  && truncate -s 0 /var/log/*log
 
