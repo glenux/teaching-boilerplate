@@ -13,10 +13,9 @@
   "license": "ISC",
   "dependencies": {
     "@marp-team/marp-cli": "^1.0.3",
+    "ansi-regex": "^6.0.1",
     "foreman": "^3.0.1",
-    "node-sass": "^6.0.0",
-    "json-schema": ">=0.4.0",
-    "ansi-regex": ">=5.0.1"
+    "node-sass": "^6.0.1"
   },
   "devDependencies": {
     "@marp-team/marp-core": "^2.0.2",
