@@ -8,7 +8,7 @@ RUN apt-get update \
  && truncate -s 0 /var/log/*log
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends make build-essential inotify-tools chromium \
+ && apt-get install -y --no-install-recommends make build-essential inotify-tools chromium gosu \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
  && truncate -s 0 /var/log/*log
@@ -21,6 +21,7 @@ ENV LANG=C
 ENV LC_ALL=C
 
 RUN make prepare
+
 
 ENTRYPOINT ["/app/docker/entrypoint.sh"]
 CMD ["watch"]
