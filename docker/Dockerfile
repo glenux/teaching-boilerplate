@@ -2,11 +2,13 @@ FROM node:bullseye-slim
 MAINTAINER Glenn ROLLAND <glenux@glenux.net>
 
 RUN apt-get update \
- && apt-get install -y python3 python3-pip pipenv \
+ && apt-get install -y --no-install-recommends python3 python3-pip pipenv \
  && apt-get clean
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+ && truncate -s 0 /var/log/*log
 
 RUN apt-get update \
- && apt-get install -y make build-essential inotify-tools \
+ && apt-get install -y --no-install-recommends make build-essential inotify-tools chromium \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
  && truncate -s 0 /var/log/*log
