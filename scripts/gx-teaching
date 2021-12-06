@@ -19,18 +19,33 @@ else
 	echo "Theme: no theme detected. Using default files"
 fi
 
+if [ -f "$BASEDIR/mkdocs.yml" ]; then
+	DOCKER_OPT_MKDOCS_CONFIG="-v $BASEDIR/mkdocs.yml:/app/mkdocs.yml"
+	echo "Mkdocs: detected mkdocs.yml file. Adding option to command line ($DOCKER_OPT_MKDOCS_CONFIG)"
+else
+	echo "Mkdocs: no mkdocs.yml detected. Using default files"
+fi
+
+if [ -d "$BASEDIR/slides" ]; then
+	DOCKER_OPT_MARP_PORT="-p 5200:5200"
+fi
+
+if [ -d "$BASEDIR/docs" ]; then
+	DOCKER_OPT_MKDOCS_PORT="-p 5100:5100"
+fi
 
 docker run -it \
+	--shm-size=1gb \
+	-e "EXT_UID=$(id -u)" \
+	-e "EXT_GID=$(id -g)" \
 	-v "$BASEDIR/docs:/app/docs" \
 	-v "$BASEDIR/slides:/app/slides" \
 	-v "$BASEDIR/images:/app/images" \
 	-v "$BASEDIR/_build:/app/_build" \
-	-v "$BASEDIR/mkdocs.yml:/app/mkdocs.yml" \
-	-e "EXT_UID=$(id -u)" \
-	-e "EXT_GID=$(id -g)" \
+	$DOCKER_OPT_MKDOCS_CONFIG \
 	$DOCKER_OPT_MARP_THEME \
-	-p 5200:5200 \
-	-p 5100:5100 \
+	$DOCKER_OPT_MKDOCS_PORT \
+	$DOCKER_OPT_MARP_PORT \
 	"$DOCKER_IMAGE" "$ACTION"
 
 # TODO: ask current user permissions
