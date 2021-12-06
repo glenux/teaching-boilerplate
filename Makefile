@@ -233,6 +233,3 @@ docker-push:
 
 docker-pull:
 	env docker pull glenux/teaching-boilerplate:latest
-
-shell:
-	$(SHELL) -c "exec $${SHELL}"

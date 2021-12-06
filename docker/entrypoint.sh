@@ -21,4 +21,9 @@ if [ -d "_build" ]; then
 	chown -R "$EXT_UID:$EXT_GID" _build
 fi
 
-exec gosu "$EXT_UID:$EXT_GID" make "$@"
+if [ "$1" = "shell" ]; then
+	exec bash
+else
+	exec gosu "$EXT_UID:$EXT_GID" make "$@"
+fi
+
