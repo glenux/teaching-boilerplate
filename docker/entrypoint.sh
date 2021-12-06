@@ -9,10 +9,12 @@ echo "Arguments: $ARGS"
 EXT_UID=${EXT_UID:-999}
 EXT_GID=${EXT_GID:-999}
 
+# Create user with given ID if needed
 if ! grep -q "^[^:]*:[^:]*:$EXT_UID:" /etc/group ; then
 	groupadd -g "$EXT_GID" appuser
 fi
 
+# Create group with given ID if needed
 if ! grep -q "^[^:]*:[^:]*:$EXT_UID:" /etc/passwd ; then
 	useradd -r -u "$EXT_UID" -g appuser appuser
 fi
@@ -27,4 +29,3 @@ if [ "$1" = "shell" ]; then
 else
 	exec gosu "$EXT_UID:$EXT_GID" make "$@"
 fi
-
