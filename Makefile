@@ -144,7 +144,7 @@ serve-docs: watch-docs
 tocupdate:
 	pipenv run ./scripts/update-toc $(DOCS_DIR) ; \
 
-$(BUILD_SLIDES_DIR)/%.pdf: $(CACHE_SLIDES_DIR)/%.mdpp.md | $(BUILD_SLIDES_DIR)
+$(BUILD_SLIDES_DIR)/%.pdf: $(CACHE_SLIDES_DIR)/%.mdpp.md | $(BUILD_SLIDES_DIR) .marp/theme.css
 	npx marp --allow-local-files \
 	 	 --engine $$(pwd)/.marp/engine.js \
 	 	 --html \
@@ -152,7 +152,7 @@ $(BUILD_SLIDES_DIR)/%.pdf: $(CACHE_SLIDES_DIR)/%.mdpp.md | $(BUILD_SLIDES_DIR)
 	 	 $< \
 	 	 -o $@
 
-$(BUILD_SLIDES_DIR)/%.pdf: $(SLIDES_DIR)/%.md | $(BUILD_SLIDES_DIR)
+$(BUILD_SLIDES_DIR)/%.pdf: $(SLIDES_DIR)/%.md | $(BUILD_SLIDES_DIR) .marp/theme.css
 	npx marp --allow-local-files \
 	 	 --engine $$(pwd)/.marp/engine.js \
 	 	 --html \

@@ -19,6 +19,7 @@ fi
 
 if [ -d "_build" ]; then
 	chown -R "$EXT_UID:$EXT_GID" _build
+	chown -R "$EXT_UID:$EXT_GID" .marp
 fi
 
 if [ "$1" = "shell" ]; then
