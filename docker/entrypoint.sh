@@ -17,6 +17,8 @@ if ! grep -q "^[^:]*:[^:]*:$EXT_UID:" /etc/passwd ; then
 	useradd -r -u "$EXT_UID" -g appuser appuser
 fi
 
-chown -R "$EXT_UID:$EXT_GID" _build
+if [ -d "_build" ]; then
+	chown -R "$EXT_UID:$EXT_GID" _build
+fi
 
 exec gosu "$EXT_UID:$EXT_GID" make "$@"
