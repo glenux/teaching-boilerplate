@@ -20,8 +20,7 @@ WORKDIR /app
 ENV LANG=C
 ENV LC_ALL=C
 
-RUN make prepare
-
+RUN make prepare SYSTEM_INSTALL=1
 
 ENTRYPOINT ["/app/docker/entrypoint.sh"]
 CMD ["watch"]

@@ -1,5 +1,8 @@
 #!/usr/bin/make -f
 
+## System-wide installation of python/node ?
+SYSTEM_INSTALL=0
+
 ## Configure this part if you wish to
 DEPLOY_REPO=
 DEPLOY_OPTS=
@@ -69,7 +72,11 @@ prepare-slides: ## install prerequisites for PDF slides only
 	npx browserslist@latest --update-db
 
 prepare-docs: ## install prerequisites for static docs site only
-	pipenv install
+	if [ "$(SYSTEM_INSTALL)" -eq 1 ]; then \
+		pipenv install --system ; \
+	else \
+		pipenv install ; \
+	fi
 
 .PHONY: prepare prepare-slides prepare-docs
 
