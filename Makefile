@@ -148,9 +148,6 @@ serve-docs: watch-docs
 .PHONY: watch watch-slides watch-docs watch-slides-internal watch-docs-internal serve serve-docs serve-slides
 
 
-#tocupdate:
-#	pipenv run ./scripts/update-toc $(DOCS_DIR) ; \
-
 $(BUILD_SLIDES_DIR)/%.pdf: $(CACHE_SLIDES_DIR)/%.mdpp.md | $(BUILD_SLIDES_DIR) .marp/theme.css
 	npx marp --allow-local-files \
 	 	 --engine $$(pwd)/.marp/engine.js \
@@ -184,7 +181,6 @@ build-slides: $(SLIDES_PDF_ALL) $(SLIDES_MD_ALL) ## build PDF slides only
 merge-slides: $(SLIDES_MDPP_MD) $(SLIDES_MD_ALL)
 
 build-docs: ## build static docs site only
-	#$(MAKE) tocupdate
 	mkdir -p $(BUILD_DOCS_DIR)
 	pipenv run mkdocs build \
 		--site-dir $(BUILD_DOCS_DIR)
