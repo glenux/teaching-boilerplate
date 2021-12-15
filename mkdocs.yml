@@ -25,10 +25,10 @@ theme:
     primary: 'white'
     accent: 'black'
     neutral: 'black'
-  feature:
-    - navigation.tabs
-    - navigation.tabs.sticky
-    # tabs: false
+  features:
+    - navigation.sections
+    # - navigation.tabs
+    # - navigation.tabs.sticky
 
 i18n:
   prev: 'Chapitre précédent'
