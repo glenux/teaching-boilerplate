@@ -73,7 +73,7 @@ prepare-slides: ## install prerequisites for PDF slides only
 
 prepare-docs: ## install prerequisites for static docs site only
 	if [ "$(SYSTEM_INSTALL)" -eq 1 ]; then \
-		pipenv install --system ; \
+		pipenv install --deploy --system ; \
 	else \
 		pipenv install ; \
 	fi
