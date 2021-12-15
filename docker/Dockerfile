@@ -13,14 +13,16 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
  && truncate -s 0 /var/log/*log
 
-
 COPY . /app
 WORKDIR /app
 
-ENV LANG=C
-ENV LC_ALL=C
+ENV LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    PIPENV_HIDE_EMOJIS=1
 
-RUN make prepare SYSTEM_INSTALL=1
+RUN ln -sf python3 /usr/bin/python \
+ && make prepare SYSTEM_INSTALL=1
 
 ENTRYPOINT ["/app/docker/entrypoint.sh"]
 CMD ["watch"]
+
