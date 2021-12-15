@@ -18,7 +18,8 @@ WORKDIR /app
 
 ENV LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
-    PIPENV_HIDE_EMOJIS=1
+    PIPENV_HIDE_EMOJIS=1 \
+    PIPENV_VENV_IN_PROJECT=1
 
 RUN ln -sf python3 /usr/bin/python \
  && make prepare SYSTEM_INSTALL=1
