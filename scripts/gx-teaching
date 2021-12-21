@@ -13,7 +13,7 @@ while [ $# -gt 0 ]; do
 	OPT="${2:-}"
 	shift
 
-	echo  "ARG=$ARG OPT=$OPT"
+	# echo "DEBUG: ARG=$ARG OPT=$OPT"
 
 	case "$ARG" in
 	-d|--data-dir) 
