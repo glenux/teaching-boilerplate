@@ -58,6 +58,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build HTML for docs
+        run: ./scripts/gx-teaching . build-docs-html
+
+      - name: Build PDF for docs
+        run: ./scripts/gx-teaching . build-slides-pdf
+
+      - name: Build HTML for slides
+        run: ./scripts/gx-teaching . build-slides-html
+
+      - name: Build PDF for slides
+        run: ./scripts/gx-teaching . build-slides-pdf
 
   push-docker-image:
     needs: test-docker-image
