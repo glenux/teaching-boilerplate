@@ -7,8 +7,16 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
  && truncate -s 0 /var/log/*log
 
+# Tools for running the common parts
 RUN apt-get update \
- && apt-get install -y --no-install-recommends make build-essential inotify-tools chromium gosu unzip m4 \
+ && apt-get install -y --no-install-recommends make build-essential inotify-tools gosu unzip \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+ && truncate -s 0 /var/log/*log
+
+# Tools for building pdfs
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends make pdftk m4 chromium \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
  && truncate -s 0 /var/log/*log
