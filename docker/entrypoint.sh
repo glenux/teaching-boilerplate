@@ -13,6 +13,7 @@ EXT_GID=${EXT_GID:-999}
 mkdir -p _cache
 mkdir -p _build
 mkdir -p .marp
+mkdir -p /home/appuser
 
 # Create user with given ID if needed
 if ! grep -q "^[^:]*:[^:]*:$EXT_UID:" /etc/group ; then
@@ -24,11 +25,10 @@ if ! grep -q "^[^:]*:[^:]*:$EXT_UID:" /etc/passwd ; then
 	useradd -r -u "$EXT_UID" -g appuser appuser
 fi
 
-if [ -d "_build" ]; then
-	chown -R "$EXT_UID:$EXT_GID" _cache
-	chown -R "$EXT_UID:$EXT_GID" _build
-	chown -R "$EXT_UID:$EXT_GID" .marp
-fi
+chown -R "$EXT_UID:$EXT_GID" _cache
+chown -R "$EXT_UID:$EXT_GID" _build
+chown -R "$EXT_UID:$EXT_GID" .marp
+chown -R "$EXT_UID:$EXT_GID" /home/appuser
 
 if [ "$1" = "shell" ]; then
 	exec bash
