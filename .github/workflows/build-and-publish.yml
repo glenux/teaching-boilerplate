@@ -90,7 +90,7 @@ jobs:
           ./scripts/gx-teaching \
             --no-tty  \
             --data-dir . \
-            --action build-slides-pdf
+            --action build-docs-pdf
 
       - name: Build HTML for slides
         run: |
