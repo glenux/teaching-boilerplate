@@ -10,6 +10,7 @@ name: "Build, Test and Publish"
 
 env:
   IMAGE_NAME: glenux/teaching-boilerplate
+  DOCKER_BUILDKIT: 1
 
 jobs:
   build-docker-image:
