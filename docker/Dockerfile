@@ -8,7 +8,7 @@ RUN apt-get update \
  && truncate -s 0 /var/log/*log
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends make build-essential inotify-tools chromium gosu unzip \
+ && apt-get install -y --no-install-recommends make build-essential inotify-tools chromium gosu unzip m4 \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
  && truncate -s 0 /var/log/*log
