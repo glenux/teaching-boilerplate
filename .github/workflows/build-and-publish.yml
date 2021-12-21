@@ -1,16 +1,14 @@
 ---
 name: "Build, Test and Publish"
 
-on:
+"on":
   # run it on push to the default repository branch
   push:
-    branches: [master]
+    branches: [master, develop]
   # run it during pull request
   pull_request:
 
 jobs:
-  # define job to build and publish docker image
-
   build-docker-image:
     name: "Build docker image"
     # run only when code is compiling and tests are passing
@@ -79,7 +77,7 @@ jobs:
 
       - name: Load image
         run: |
-          docker load --input /tmp/myimage.tar
+          docker load --input /tmp/teaching-boilerplate.image.tar
           docker image ls -a
 
       - name: Build HTML for docs
@@ -95,8 +93,9 @@ jobs:
         run: ./scripts/gx-teaching . build-slides-pdf
 
   push-docker-image:
-    needs: test-docker-image
     name: "Push docker image to registry"
+    needs: test-docker-image
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
@@ -124,18 +123,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build image and push to Docker Hub and GitHub Container Registry
-        uses: docker/build-push-action@v2
-        with:
-          # relative path to the place where source code with Dockerfile
-          # is located
-          context: .
-          file: docker/Dockerfile
-          # Note: tags has to be all lower-case
-          tags: |
-            glenux/teaching-boilerplate:${{ env.BUILD_VERSION }}
+      - name: Tag images
+        run: >
+          docker tag
             glenux/teaching-boilerplate:latest
-          # build on feature branches, push only on main branch
-          push: ${{ github.ref == 'refs/heads/master' }}
+            glenux/teaching-boilerplate:${{ env.BUILD_VERSION }}
 
+      - name: Build image and push to Docker Hub and GitHub Container Registry
+        run: |
+          docker push glenux/teaching-boilerplate:latest
+          docker push glenux/teaching-boilerplate:${{ env.BUILD_VERSION }}
 #
