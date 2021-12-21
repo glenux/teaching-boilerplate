@@ -1,12 +1,58 @@
 #!/bin/sh
 # vim: set ft=sh:
 
-BASEDIR="${1:-.}"
-BASEDIR="$(cd "$BASEDIR" && pwd)"
-
-ACTION="${2:-watch}"
+BASEDIR="."
+ACTION="watch"
 
 DOCKER_IMAGE=glenux/teaching-boilerplate:latest
+DOCKER_OPT_TTY="-t"
+
+# Parse arguments
+while [ $# -gt 0 ]; do
+	ARG="${1:-}"
+	OPT="${2:-}"
+	shift
+
+	echo  "ARG=$ARG OPT=$OPT"
+
+	case "$ARG" in
+	-d|--data-dir) 
+		shift # argument requires a parameter
+		if [ -z "$OPT" ]; then
+			>&2 echo "ERROR: missing argument for --data-dir"
+			exit 1
+		fi
+		if [ ! -d "$OPT" ]; then
+			>&2 echo "ERROR: argument for --data-dir must be a directory"
+			exit 1
+		fi
+		BASEDIR="$(cd "$OPT" && pwd)"
+		;;
+	-a|--action)
+		shift # argument requires a parameter
+		if [ -z "$OPT" ]; then
+			>&2 echo "ERROR: missing argument for --action"
+			exit 1
+		fi
+		ACTION="$OPT"
+		;;
+	-T|--no-tty)
+		DOCKER_OPT_TTY=""
+		;;
+	-h|--help)
+		echo "Usage: $0 [options]"
+		echo ""
+		echo "-d, --data-dir DIR     Content directory"
+		echo "-a, --action ACTION    Action (watch, build, shell, etc.)"
+		echo "-t, --tty              Enable TTY mode (needed for shell)"
+		echo "-h, --help             Show this help"
+		;;
+	*) 
+		>&2 echo "ERROR: unknown option '$ARG'"
+		exit 1
+		;;
+	esac
+done
 
 echo "basedir      = $BASEDIR"
 echo "docker_image = $DOCKER_IMAGE"
@@ -34,7 +80,7 @@ if [ -d "$BASEDIR/docs" ]; then
 	DOCKER_OPT_MKDOCS_PORT="-p 5100:5100"
 fi
 
-docker run -it \
+docker run -i $DOCKER_OPT_TTY \
 	--shm-size=1gb \
 	-e "EXT_UID=$(id -u)" \
 	-e "EXT_GID=$(id -g)" \

@@ -174,13 +174,29 @@ $(BUILD_SLIDES_DIR):
 ## docs   => static web site
 ##
 
-build: build-docs build-slides ## build all documents
+build: build-pdf build-html ## build all documents as PDF and HTML files
 
-build-slides: $(SLIDES_PDF_ALL) $(SLIDES_MD_ALL) ## build PDF slides only
+build-pdf: build-docs-pdf build-slides-pdf ## build all documents as PDF files
+
+build-html: build-docs-html build-slides-html ## build all documents as HTML files
+
+
+build-slides-pdf: $(SLIDES_PDF_ALL) $(SLIDES_MD_ALL) ## build PDF slides only
 
 merge-slides: $(SLIDES_MDPP_MD) $(SLIDES_MD_ALL)
 
-build-docs: ## build static docs site only
+build-docs-pdf:
+	mkdir -p $(BUILD_DOCS_DIR)
+	rm -f $(BUILD_DOCS_DIR)/combined.pdf
+	PYTHONUTF8=1 \
+		ENABLE_PDF_EXPORT=1 \
+         pipenv run mkdocs build \
+            --site-dir $(BUILD_DOCS_DIR)
+	pdftk \
+		$$(find $(BUILD_DOCS_DIR) -name *.pdf -not -name index.pdf |sort ) \
+        cat output $(BUILD_DOCS_DIR)/combined.pdf
+
+build-docs-html:  ## build static docs site only
 	mkdir -p $(BUILD_DOCS_DIR)
 	pipenv run mkdocs build \
 		--site-dir $(BUILD_DOCS_DIR)

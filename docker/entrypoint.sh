@@ -9,6 +9,11 @@ echo "Arguments: $ARGS"
 EXT_UID=${EXT_UID:-999}
 EXT_GID=${EXT_GID:-999}
 
+# Create missing directories
+mkdir -p _cache
+mkdir -p _build
+mkdir -p .marp
+
 # Create user with given ID if needed
 if ! grep -q "^[^:]*:[^:]*:$EXT_UID:" /etc/group ; then
 	groupadd -g "$EXT_GID" appuser
@@ -20,6 +25,7 @@ if ! grep -q "^[^:]*:[^:]*:$EXT_UID:" /etc/passwd ; then
 fi
 
 if [ -d "_build" ]; then
+	chown -R "$EXT_UID:$EXT_GID" _cache
 	chown -R "$EXT_UID:$EXT_GID" _build
 	chown -R "$EXT_UID:$EXT_GID" .marp
 fi

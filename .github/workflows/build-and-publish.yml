@@ -79,16 +79,32 @@ jobs:
           docker image ls -a
 
       - name: Build HTML for docs
-        run: ./scripts/gx-teaching . build-docs-html
+        run: |
+          ./scripts/gx-teaching \
+            --no-tty \
+            --data-dir . \
+            --action build-docs-html
 
       - name: Build PDF for docs
-        run: ./scripts/gx-teaching . build-slides-pdf
+        run: |
+          ./scripts/gx-teaching \
+            --no-tty  \
+            --data-dir . \
+            --action build-slides-pdf
 
       - name: Build HTML for slides
-        run: ./scripts/gx-teaching . build-slides-html
+        run: |
+          ./scripts/gx-teaching \
+            --no-tty  \
+            --data-dir . \
+            --action build-slides-html
 
       - name: Build PDF for slides
-        run: ./scripts/gx-teaching . build-slides-pdf
+        run: |
+          ./scripts/gx-teaching \
+            --no-tty \
+            --data-dir . \
+            --action build-slides-pdf
 
   push-docker-image:
     name: "Push docker image to registry"
