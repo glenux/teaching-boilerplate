@@ -17,7 +17,7 @@ mkdocs-material = "*"
 mocodo = "*"
 pyinotify = "*"
 pymdown-extensions = "*"
-
+mkdocs-pdf-export-plugin = "*"
 
 [requires]
 python_version = "3.9"

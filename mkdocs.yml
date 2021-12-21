@@ -67,6 +67,11 @@ markdown_extensions:
 plugins:
   - include-markdown
   - awesome-pages
+  - pdf-export:
+      verbose: true
+      media_type: print
+      enabled_if_env: ENABLE_PDF_EXPORT
+      combined: false
 
 extra:
   search:
