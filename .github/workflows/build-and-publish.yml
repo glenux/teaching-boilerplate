@@ -1,5 +1,5 @@
 ---
-name: "Build and Publish"
+name: "Build, Test and Publish"
 
 on:
   # run it on push to the default repository branch
@@ -54,7 +54,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: teaching-boilerplate-image
-          path: /tmp/
+          path: |
+            /tmp/teaching-boilerplate.image.tar
+            /tmp/extra.env
 
   test-docker-image:
     name: "Test docker image (build PDF and HTML)"
