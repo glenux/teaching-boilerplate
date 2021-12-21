@@ -31,6 +31,7 @@ jobs:
       - name: Build image and save as file
         run: |
           docker build \
+            --file docker/Dockerfile \
             --cache-from $IMAGE_NAME:latest \
             --tag $IMAGE_NAME:latest \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
@@ -121,9 +122,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Tag images
-        run: >
-          docker tag
-            glenux/teaching-boilerplate:latest
+        run: |
+          docker tag \
+            glenux/teaching-boilerplate:latest \
             glenux/teaching-boilerplate:${{ env.BUILD_VERSION }}
 
       - name: Build image and push to Docker Hub and GitHub Container Registry
