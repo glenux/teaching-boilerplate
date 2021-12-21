@@ -176,12 +176,17 @@ $(BUILD_SLIDES_DIR):
 
 build: build-pdf build-html ## build all documents as PDF and HTML files
 
-build-pdf: build-docs-pdf build-slides-pdf ## build all documents as PDF files
+build-pdf: build-docs-pdf build-slides-pdf ## build both docs and slides as PDF files
 
-build-html: build-docs-html build-slides-html ## build all documents as HTML files
+build-html: build-docs-html build-slides-html ## build both docs and slides as HTML files
 
+build-docs: build-docs-pdf build-docs-html ## build only docs as PDF and HTML
+
+build-slides: build-slides-pdf build-slides-html ## build only slides as PDF and HTML
 
 build-slides-pdf: $(SLIDES_PDF_ALL) $(SLIDES_MD_ALL) ## build PDF slides only
+
+build-slides-html: $(SLIDES_HTML_ALL) ## build HTML slides only
 
 merge-slides: $(SLIDES_MDPP_MD) $(SLIDES_MD_ALL)
 
