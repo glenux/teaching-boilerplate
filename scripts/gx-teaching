@@ -1,9 +1,9 @@
 #!/bin/sh
 # vim: set ft=sh:
 
-BASEDIR="."
+# Set defaults
+BASEDIR="$(pwd)"
 ACTION="watch"
-
 DOCKER_IMAGE=glenux/teaching-boilerplate:latest
 DOCKER_OPT_TTY="-t"
 
@@ -80,6 +80,7 @@ if [ -d "$BASEDIR/docs" ]; then
 	DOCKER_OPT_MKDOCS_PORT="-p 5100:5100"
 fi
 
+set -x
 docker run -i $DOCKER_OPT_TTY \
 	--shm-size=1gb \
 	-e "EXT_UID=$(id -u)" \
@@ -93,6 +94,7 @@ docker run -i $DOCKER_OPT_TTY \
 	$DOCKER_OPT_MKDOCS_PORT \
 	$DOCKER_OPT_MARP_PORT \
 	"$DOCKER_IMAGE" "$ACTION"
+set +x
 
 # TODO: ask current user permissions
 # TODO: fix permissions on generated files
