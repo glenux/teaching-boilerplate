@@ -4,8 +4,19 @@
 # Set defaults
 BASEDIR="$(pwd)"
 ACTION="watch"
+VERBOSITY="0"
 DOCKER_IMAGE=glenux/teaching-boilerplate:latest
 DOCKER_OPT_TTY="-t"
+
+gxt_usage() {
+	echo "Usage: $0 [options]"
+	echo ""
+	echo "-d, --data-dir DIR     Content directory"
+	echo "-a, --action ACTION    Action (watch, build, shell, etc.)"
+	echo "-t, --tty              Enable TTY mode (needed for shell)"
+	echo "-v, --verbose          Enable verbosity"
+	echo "-h, --help             Show this help"
+}
 
 # Parse arguments
 while [ $# -gt 0 ]; do
@@ -16,6 +27,14 @@ while [ $# -gt 0 ]; do
 	# echo "DEBUG: ARG=$ARG OPT=$OPT"
 
 	case "$ARG" in
+	-a|--action)
+		shift # argument requires a parameter
+		if [ -z "$OPT" ]; then
+			>&2 echo "ERROR: missing argument for --action"
+			exit 1
+		fi
+		ACTION="$OPT"
+		;;
 	-d|--data-dir) 
 		shift # argument requires a parameter
 		if [ -z "$OPT" ]; then
@@ -28,26 +47,18 @@ while [ $# -gt 0 ]; do
 		fi
 		BASEDIR="$(cd "$OPT" && pwd)"
 		;;
-	-a|--action)
-		shift # argument requires a parameter
-		if [ -z "$OPT" ]; then
-			>&2 echo "ERROR: missing argument for --action"
-			exit 1
-		fi
-		ACTION="$OPT"
+	-h|--help)
+		>&2 gxt_usage
+		exit 0
 		;;
 	-T|--no-tty)
 		DOCKER_OPT_TTY=""
 		;;
-	-h|--help)
-		echo "Usage: $0 [options]"
-		echo ""
-		echo "-d, --data-dir DIR     Content directory"
-		echo "-a, --action ACTION    Action (watch, build, shell, etc.)"
-		echo "-t, --tty              Enable TTY mode (needed for shell)"
-		echo "-h, --help             Show this help"
+	-v|--verbosity)
+		VERBOSITY="$((VERBOSITY+1))"
 		;;
 	*) 
+		>&2 gxt_usage
 		>&2 echo "ERROR: unknown option '$ARG'"
 		exit 1
 		;;
@@ -80,7 +91,9 @@ if [ -d "$BASEDIR/docs" ]; then
 	DOCKER_OPT_MKDOCS_PORT="-p 5100:5100"
 fi
 
-set -x
+if [ "$VERBOSITY" -gt 0 ]; then
+	set -x
+fi
 docker run -i $DOCKER_OPT_TTY \
 	--shm-size=1gb \
 	-e "EXT_UID=$(id -u)" \
@@ -94,7 +107,9 @@ docker run -i $DOCKER_OPT_TTY \
 	$DOCKER_OPT_MKDOCS_PORT \
 	$DOCKER_OPT_MARP_PORT \
 	"$DOCKER_IMAGE" "$ACTION"
-set +x
+if [ "$VERBOSITY" -gt 0 ]; then
+	set +x
+fi
 
 # TODO: ask current user permissions
 # TODO: fix permissions on generated files
