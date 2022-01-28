@@ -33,7 +33,7 @@ chown -R "$EXT_UID:$EXT_GID" /home/appuser
 # Patch mkdocs configuration 
 if [ -f mkdocs-patch.yml ]; then
   yq \
-  	  eval-all
+  	  eval-all \
   	  '. as $item ireduce ({}; . * $item)' \
   	  mkdocs-source.yml \
   	  mkdocs-patch.yml \

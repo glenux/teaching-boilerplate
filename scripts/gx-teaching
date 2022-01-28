@@ -82,7 +82,7 @@ if [ -f "$BASEDIR/mkdocs.yml" ]; then
 fi
 
 if [ -f "$BASEDIR/mkdocs-patch.yml" ]; then
-	DOCKER_OPT_MKDOCS_CONFIG="-v $BASEDIR/mkdocs.yml:/app/mkdocs-patch.yml"
+	DOCKER_OPT_MKDOCS_CONFIG="-v $BASEDIR/mkdocs-patch.yml:/app/mkdocs-patch.yml"
 	echo "Mkdocs: detected mkdocs-patch.yml file. Adding option to command line ($DOCKER_OPT_MKDOCS_CONFIG)"
 else
 	echo "Mkdocs: no mkdocs-patch.yml detected. Using default files"
