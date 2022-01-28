@@ -77,10 +77,15 @@ else
 fi
 
 if [ -f "$BASEDIR/mkdocs.yml" ]; then
-	DOCKER_OPT_MKDOCS_CONFIG="-v $BASEDIR/mkdocs.yml:/app/mkdocs.yml"
-	echo "Mkdocs: detected mkdocs.yml file. Adding option to command line ($DOCKER_OPT_MKDOCS_CONFIG)"
+	>&2 echo "Mkdocs: detected mkdocs.yml file. Please rename to mkdocs-patch.yml"
+	exit 1
+fi
+
+if [ -f "$BASEDIR/mkdocs-patch.yml" ]; then
+	DOCKER_OPT_MKDOCS_CONFIG="-v $BASEDIR/mkdocs.yml:/app/mkdocs-patch.yml"
+	echo "Mkdocs: detected mkdocs-patch.yml file. Adding option to command line ($DOCKER_OPT_MKDOCS_CONFIG)"
 else
-	echo "Mkdocs: no mkdocs.yml detected. Using default files"
+	echo "Mkdocs: no mkdocs-patch.yml detected. Using default files"
 fi
 
 if [ -d "$BASEDIR/slides" ]; then

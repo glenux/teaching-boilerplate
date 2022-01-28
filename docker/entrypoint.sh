@@ -30,6 +30,16 @@ chown -R "$EXT_UID:$EXT_GID" _build
 chown -R "$EXT_UID:$EXT_GID" .marp
 chown -R "$EXT_UID:$EXT_GID" /home/appuser
 
+# Patch mkdocs configuration 
+if [ -f mkdocs-patch.yml ]; then
+  yq \
+  	  eval-all
+  	  '. as $item ireduce ({}; . * $item)' \
+  	  mkdocs-source.yml \
+  	  mkdocs-patch.yml \
+  	  > mkdocs.yml
+fi
+
 if [ "$1" = "shell" ]; then
 	exec bash
 else

@@ -21,6 +21,12 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
  && truncate -s 0 /var/log/*log
 
+# External tools
+# yq => manage YML
+RUN curl -o /usr/local/bin/yq \
+         https://github.com/mikefarah/yq/releases/download/v4.18.1/yq_linux_amd64 \
+ && chmod +x /usr/local/bin/yq
+
 COPY . /app
 WORKDIR /app
 
