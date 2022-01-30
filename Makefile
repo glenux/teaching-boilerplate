@@ -248,12 +248,12 @@ fixme:
 
 .PHONY: fixme
 
-docker-build:
+docker-build: ## build docker image
 	docker build -t glenux/teaching-boilerplate:$(BUILD_VERSION)
 	docker tag glenux/teaching-boilerplate:$(BUILD_VERSION) glenux/teaching-boilerplate:latest
 
-docker-push:
+docker-push: ## push docker image
 	env docker push glenux/teaching-boilerplate:latest
 
-docker-pull:
+docker-pull: ## download docker image
 	env docker pull glenux/teaching-boilerplate:latest
