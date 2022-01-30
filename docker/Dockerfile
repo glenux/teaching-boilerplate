@@ -23,7 +23,7 @@ RUN apt-get update \
 
 # External tools
 # yq => manage YML
-RUN curl -o /usr/local/bin/yq \
+RUN curl -sSL -o /usr/local/bin/yq \
          https://github.com/mikefarah/yq/releases/download/v4.18.1/yq_linux_amd64 \
  && chmod +x /usr/local/bin/yq
 
