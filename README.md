@@ -1,6 +1,6 @@
 # Teaching-Boilerplate
 
-## Prerequisites
+## Prerequisites :
 
 Make sure you have python and node installed
 
