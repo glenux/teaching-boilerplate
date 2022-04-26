@@ -190,7 +190,7 @@ build-slides-html: $(SLIDES_HTML_ALL) ## build HTML slides only
 
 merge-slides: $(SLIDES_MDPP_MD) $(SLIDES_MD_ALL)
 
-build-docs-pdf:
+build-docs-pdf:  ## build pdf docs only
 	mkdir -p $(BUILD_DOCS_DIR)
 	rm -f $(BUILD_DOCS_DIR)/combined.pdf
 	PYTHONUTF8=1 \
