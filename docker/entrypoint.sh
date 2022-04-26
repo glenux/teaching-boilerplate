@@ -17,12 +17,12 @@ mkdir -p /home/appuser
 
 # Create user with given ID if needed
 if ! grep -q "^[^:]*:[^:]*:$EXT_UID:" /etc/group ; then
-	groupadd -g "$EXT_GID" appuser
+  groupadd -g "$EXT_GID" appuser
 fi
 
 # Create group with given ID if needed
 if ! grep -q "^[^:]*:[^:]*:$EXT_UID:" /etc/passwd ; then
-	useradd -r -u "$EXT_UID" -g appuser appuser
+  useradd -r -u "$EXT_UID" -g appuser appuser
 fi
 
 chown -R "$EXT_UID:$EXT_GID" _cache
@@ -33,18 +33,19 @@ chown -R "$EXT_UID:$EXT_GID" /home/appuser
 # Patch mkdocs configuration 
 # set -x
 if [ -f mkdocs-patch.yml ]; then
-  # bash
+  # patch reference mkdocs with user-provided options
   yq eval-all '. as $item ireduce ({}; . * $item)' \
-  	  mkdocs-source.yml \
-  	  mkdocs-patch.yml \
-  	  > mkdocs.yml
+    mkdocs-source.yml \
+    mkdocs-patch.yml \
+    > mkdocs.yml
 else
-	cp mkdocs-patch.yml mkdocs.yml
+  # use reference mkdocs only (no options)
+  ln -s mkdocs-source.yml mkdocs.yml
 fi
 # set +x
 
 if [ "$1" = "shell" ]; then
-	exec bash
+  exec bash
 else
-	exec gosu "$EXT_UID:$EXT_GID" make "$@"
+  exec gosu "$EXT_UID:$EXT_GID" make "$@"
 fi
