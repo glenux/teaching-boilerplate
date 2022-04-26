@@ -14,7 +14,7 @@
   "dependencies": {
     "@marp-team/marp-cli": "^1.5.0",
     "foreman": "^3.0.1",
-    "node-sass": "^6.0.1"
+    "node-sass": "^7.0.0"
   },
   "devDependencies": {
     "@marp-team/marp-core": "^3.0.0",
