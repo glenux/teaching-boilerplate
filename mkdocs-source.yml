@@ -50,8 +50,13 @@ markdown_extensions:
   - admonition
   - toc:
       permalink: '#'
-  - codehilite:
-      guess_lang: false
+
+  # https://squidfunk.github.io/mkdocs-material/reference/code-blocks/
+  - pymdownx.highlight:
+      anchor_linenums: false
+  - pymdownx.inlinehilite
+  # - codehilite:
+  #    guess_lang: false
 
   # pip install mdx_truly_sane_lists
   - mdx_truly_sane_lists
