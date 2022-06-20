@@ -2,30 +2,26 @@
 
 ## Prerequisites :
 
-Make sure you have python and node installed
-
-    git remote rename origin boilerplate
-    git remote add origin git@...
-    git checkout -b upstream/boilerplate/master --track
-
-
-Install python packages
-
-    pip install -U pipenv
-    pipenv install
-
-Install node packages
-
-    npm install
-
+Make sure you have docker installed
 
 ## Usage
 
-### First steps
+### Create your directory tree
 
-Clean this repository
+```
+.           # project directory
+|- docs     # where website documents go
+|  `- *.md
+|- slides   # where presentation documents go
+|  `- *.md
+|- images/  # where images go
+|- ...
+```
 
-Change the remote
+### Write content for docs
+
+
+### Write content for slides
 
 
 ### Watch mode
