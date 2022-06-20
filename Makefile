@@ -117,6 +117,17 @@ $(CACHE_SLIDES_DIR)/%.mdpp.md: $(SLIDES_DIR)/%.mdpp
 watch: ## run development server
 	pipenv run honcho start 
 
+autoslide:
+	find $(DOCS_DIR) -regextype sed -regex '.*/[0-9][^/]*\.md' -print0 \
+		| sort -z |xargs -0 cat \
+		> $(SLIDES_DIR)/autoslide.md
+
+watch-autoslide-internal:
+	while inotifywait -q -e move -e modify -e create -e attrib -e delete -e moved_to -r $(DOCS_DIR) ; do \
+		sleep 0.25 ; \
+		$(MAKE) autoslide ; \
+	done
+
 watch-tocupdate-internal:
 	while inotifywait -q -e move -e modify -e create -e attrib -e delete -e moved_to -r docs ; do \
 		sleep 2 ; \
@@ -136,7 +147,7 @@ watch-slides-internal: .marp/theme.css
 		 -s
 
 watch-slides: ## run development server for PDF slides
-	pipenv run honcho start slides
+	pipenv run honcho start slides autoslide
 
 watch-docs: ## run development server for static docs site
 	pipenv run honcho start docs toc
