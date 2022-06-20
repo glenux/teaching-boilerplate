@@ -32,12 +32,15 @@ SLIDES_PORT=5200
 SLIDES_MDPP=$(shell find $(SLIDES_DIR) \( -name '*.mdpp' ! -name '_*' \))
 SLIDES_MDPP_MD=$(patsubst $(SLIDES_DIR)/%.mdpp,$(CACHE_SLIDES_DIR)/%.mdpp.md,$(SLIDES_MDPP))
 SLIDES_MDPP_MD_PDF=$(patsubst $(CACHE_SLIDES_DIR)/%.mdpp.md,$(BUILD_SLIDES_DIR)/%.pdf,$(SLIDES_MDPP_MD))
+SLIDES_MDPP_MD_PPTX=$(patsubst $(CACHE_SLIDES_DIR)/%.mdpp.md,$(BUILD_SLIDES_DIR)/%.pptx,$(SLIDES_MDPP_MD))
 
 SLIDES_MD=$(shell find $(SLIDES_DIR) \( -name '*.md' ! -name '_*' \)) $(SLIDES_MDPP_MD)
 SLIDES_MD_PDF=$(patsubst $(SLIDES_DIR)/%.md,$(BUILD_SLIDES_DIR)/%.pdf,$(SLIDES_MD))
+SLIDES_MD_PPTX=$(patsubst $(SLIDES_DIR)/%.md,$(BUILD_SLIDES_DIR)/%.pptx,$(SLIDES_MD))
 
 SLIDES_MD_ALL=$(SLIDES_MDPP_MD) $(SLIDES_MD)
 SLIDES_PDF_ALL=$(SLIDES_MDPP_MD_PDF) $(SLIDES_MD_PDF)
+SLIDES_PPTX_ALL=$(SLIDES_MDPP_MD_PPTX) $(SLIDES_MD_PPTX)
 
 ## Find .uml graphs
 DOCS_IMAGES_UML=$(shell find $(IMAGES_DIR) \( -name '*.uml' ! -name '_*' \))
@@ -175,6 +178,14 @@ $(BUILD_SLIDES_DIR)/%.pdf: $(SLIDES_DIR)/%.md | $(BUILD_SLIDES_DIR) .marp/theme.
 	 	 $< \
 	 	 -o $@
 
+$(BUILD_SLIDES_DIR)/%.pptx: $(SLIDES_DIR)/%.md | $(BUILD_SLIDES_DIR) .marp/theme.css
+	npx marp --allow-local-files \
+	 	 --engine $$(pwd)/.marp/engine.js \
+	 	 --html \
+	 	 --theme $$(pwd)/.marp/theme.css \
+	 	 $< \
+	 	 -o $@
+
 $(BUILD_SLIDES_DIR):
 	mkdir -p $(BUILD_SLIDES_DIR)
 
@@ -187,6 +198,8 @@ $(BUILD_SLIDES_DIR):
 
 build: build-pdf build-html  ## build all documents as PDF and HTML files
 
+build-pptx:  build-slides-pptx  ## build slides as PPTX files
+
 build-pdf: build-docs-pdf build-slides-pdf  ## build both docs and slides as PDF files
 
 build-html: build-docs-html build-slides-html  ## build both docs and slides as HTML files
@@ -195,7 +208,7 @@ build-docs: build-docs-pdf build-docs-html  ## build only docs as PDF and HTML
 
 build-slides: build-slides-pdf build-slides-html  ## build only slides as PDF and HTML
 
-build-slides: build-slides-pdf build-slides-html ## build only slides as PDF and HTML
+build-slides-pptx: $(SLIDES_PPTX_ALL) $(SLIDES_PPTX_ALL)  ## build PDF slides only
 
 build-slides-pdf: $(SLIDES_PDF_ALL) $(SLIDES_MD_ALL)  ## build PDF slides only
 
